@@ -1,0 +1,6 @@
+{
+  "name": "Nyange Radjabu Family Heritage",
+  "description": "Official digital platform dedicated to documenting, preserving and presenting the descendants, history, genealogy and legacy of Nyange Radjabu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

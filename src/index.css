@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme {
+  --color-heritage-primary: #064734;
+  --color-heritage-primary-dark: #032d21;
+  --color-heritage-primary-light: #0a5841;
+  --color-heritage-secondary: #E0FFC2;
+  --color-heritage-secondary-dark: #bdf78f;
+  --color-heritage-secondary-soft: #f4ffec;
+  --color-heritage-charcoal: #121815;
+  --color-heritage-muted: #4e5e56;
+  --color-heritage-stone: #f8faf8;
+  --color-heritage-border: #e3eae5;
+
+  --font-serif: "Montserrat", system-ui, -apple-system, sans-serif;
+  --font-sans: "Montserrat", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    color: #121815;
+    background-color: #fbfdfb;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .font-display, .font-serif {
+    font-family: var(--font-sans);
+  }
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f2;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd8d1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #064734;
+}
+
+/* Touch responsiveness utilities */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Safe area insets for iOS */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}

@@ -1,0 +1,963 @@
+# MASTER DEVELOPMENT PROMPT
+# NYANGE RADJABU FAMILY HERITAGE PLATFORM
+
+## 1. PROJECT IDENTITY AND VISION
+
+Project name: NYANGE RADJABU FAMILY HERITAGE
+
+Project type: Digital Family Heritage, Genealogy and Historical Preservation Platform.
+
+We are developing an official digital platform dedicated to documenting, preserving and presenting the descendants, history, identity and legacy of NYANGE RADJABU.
+
+This project is much bigger than a normal family website. It is intended to become the central digital archive of an extended family, allowing present and future generations to understand their origins, discover their relatives, explore their ancestry and contribute to preserving their shared history.
+
+The platform must be designed for long-term use, potentially across hundreds or thousands of family members and many generations.
+
+The immediate objective is to develop a complete, polished and functional PUBLIC WEBSITE.
+
+An administrative dashboard will be developed in a subsequent phase. However, the architecture and data models must be prepared for seamless future integration with the administration system.
+
+The public website must be the foundation of a long-term family heritage ecosystem.
+
+## 2. HISTORICAL BACKGROUND
+
+NYANGE RADJABU was a generous man who spent most of his life in Kamembe, Rwanda, and spent his final period in Burundi.
+
+He was a devoted Muslim who raised his children according to Islamic values while maintaining Rwandan values and traditions.
+
+He believed in helping others and made sure that his wives and children were taken care of on a daily basis.
+
+His legacy continues through the generations of descendants who form his extended family.
+
+This is the initial historical information provided by the family. More historical information, photographs, dates, testimonies and stories will be provided progressively.
+
+Do not invent historical events, dates, quotations, achievements, relationships or biographical details.
+
+The historical section must be designed to accommodate future additions without requiring redesign.
+
+## 3. GENERATIONAL STRUCTURE
+
+The entire genealogy begins with NYANGE RADJABU, who represents Level 0.
+
+The generation numbering is as follows:
+
+- Level 0: NYANGE RADJABU, the original family patriarch.
+- Level 1: His sons and daughters.
+- Level 2: His grandchildren.
+- Level 3: His great-grandchildren.
+- Level 4: His great-great-grandchildren.
+- Level 5 and beyond: Subsequent generations.
+
+The numbering is important. Do not shift generation levels or interpret the original patriarch as the first generation.
+
+Every individual must eventually be traceable through their actual family lineage back to NYANGE RADJABU.
+
+The system must support:
+
+- Multiple generations.
+- Multiple children per parent.
+- Multiple family branches.
+- Father-child and mother-child relationships.
+- Individuals whose other parent's information is unknown.
+- Deceased and living members.
+- Missing or incomplete historical information.
+- Corrections to previously recorded relationships.
+
+Do not create family relationships based on assumptions.
+
+## 4. INITIAL SOURCE DOCUMENT AND FAMILY DATA
+
+An official preliminary family report is attached to this project.
+
+Document title:
+
+"RIPOTI YA IDADI YA FAMILIA ZA BABU NYANGE RAJABU — TOLEO LA UKAGUZI — Miaka 15+"
+
+This is the initial source of family information.
+
+Study the entire document, including all three pages.
+
+Extract its contents carefully and preserve the original names, spelling, family classifications and reported numbers.
+
+The document contains eight listed family sections:
+
+1. Kwiriha Sudi Rajabu Family: 32.
+2. Mselem Rajabu Family: 116.
+3. Mama Omari Rajabu Family: 8.
+4. Mariam Rajabu Family: 79.
+5. Hamisi Rajabu Family: 18.
+6. Bagaragaza Saeed Miraji Family: 31.
+7. Hussein Rajabu Family: 6.
+8. Mugunda Rashid & Nyiramukarani Tausi Family: 108.
+
+Reported total: 398.
+
+The numbers represent recorded family members aged 15 years and above according to the supplied report.
+
+IMPORTANT DATA RULES:
+
+- These are reported figures, not a complete verified census.
+- The document states that seven families of the grandfather's children have not yet submitted their numbers.
+- The 108 submitted members of Mugunda Rashid & Nyiramukarani Tausi Family are already included in the total of 398.
+- Do not assume that 398 represents the entire family.
+- Do not invent individual member profiles from aggregate family numbers.
+- Do not assume that the eight listed sections represent all the patriarch's children.
+- Do not automatically interpret every name in the report as a direct child of NYANGE RADJABU.
+- Preserve names exactly as written, including their original spelling and capitalization.
+- Where the PDF does not establish a relationship, mark it as requiring verification.
+
+The website may display:
+
+"398+ Recorded Family Members (15+)"
+
+However, explain that this is the currently reported figure, not the verified total number of all descendants.
+
+Use a clearly visible indication that the family census is ongoing.
+
+The system must distinguish between:
+
+1. Recorded family statistics.
+2. Verified individual family members.
+3. Unverified family information.
+4. Incomplete family branches.
+
+Do not present a complete genealogical tree when the available evidence only supports family branch summaries.
+
+## 5. OFFICIAL BRAND IDENTITY AND DESIGN SYSTEM
+
+The website must use the following official brand colors.
+
+PRIMARY COLOR:
+#064734
+
+SECONDARY COLOR:
+#E0FFC2
+
+SUPPORTING COLORS:
+#000000
+#FFFFFF
+
+These colors are mandatory and must be used consistently throughout the website.
+
+Do not introduce alternative primary palettes.
+
+### Color application
+
+#064734:
+- Primary navigation and branding.
+- Primary buttons.
+- Important headings.
+- Selected navigation states.
+- Footer backgrounds.
+- Important visual elements.
+
+#E0FFC2:
+- Secondary backgrounds.
+- Highlighted cards.
+- Supporting visual elements.
+- Selected interactive elements.
+- Subtle accents.
+- Decorative brand elements.
+
+#FFFFFF:
+- Main light backgrounds.
+- Content surfaces.
+- Cards and readable sections.
+
+#000000:
+- Primary text where appropriate.
+- High-contrast elements.
+- Supporting typography and icons.
+
+Create a centralized design token system so all colors can be modified consistently.
+
+Do not use unnecessary gradients, excessive shadows or random colors.
+
+The overall design should be elegant, timeless, modern and professional.
+
+### Original brand identity
+
+Create an original visual identity for NYANGE RADJABU FAMILY HERITAGE.
+
+The identity should communicate:
+
+- Family unity.
+- Generational continuity.
+- Historical preservation.
+- Islamic values.
+- Rwandan heritage.
+- Respect and dignity.
+- Belonging and identity.
+
+Develop a distinctive logo or emblem concept that can be used on the website, family documents, announcements and future digital platforms.
+
+The logo must be original and should work on both light and dark backgrounds.
+
+Avoid generic corporate logos, excessive ornamental patterns and stereotypical cultural graphics.
+
+### Design quality
+
+The website must feel like an established family heritage institution.
+
+Use:
+
+- Sophisticated typography.
+- Clear visual hierarchy.
+- Generous whitespace.
+- Elegant layouts.
+- Well-designed navigation.
+- Consistent spacing.
+- Carefully designed cards.
+- Subtle and purposeful animations.
+- Professional transitions.
+- Responsive components.
+
+Avoid generic AI-generated landing page aesthetics.
+
+The website must look intentionally designed, not like a collection of unrelated templates.
+
+## 6. GLOBAL NAVIGATION AND WEBSITE STRUCTURE
+
+Build a consistent global navigation system.
+
+Main navigation:
+
+1. Home.
+2. Family Tree.
+3. Gallery.
+4. About Us.
+5. Contact Us.
+6. Donate.
+
+Also include a prominent RECORD ME action.
+
+The navigation must include:
+
+- Original family logo.
+- Responsive desktop navigation.
+- Mobile navigation menu.
+- Language selector.
+- Clear active page indicators.
+- Appropriate navigation transitions.
+
+The RECORD ME action should be visually distinguishable from ordinary navigation because it is intended for important family notifications.
+
+The Donate action should be accessible without overwhelming the rest of the interface.
+
+All navigation links must work.
+
+## 7. MULTILINGUAL FUNCTIONALITY
+
+The platform must support three official languages:
+
+1. English.
+2. Swahili.
+3. Kinyarwanda.
+
+English is the initial default language.
+
+Provide a language selector in the global navigation.
+
+Requirements:
+
+- Language switching must preserve the visitor's current page.
+- Do not redirect visitors to the homepage when switching languages.
+- Translate navigation labels.
+- Translate page headings and content.
+- Translate buttons and actions.
+- Translate forms and validation messages.
+- Translate empty states and notifications.
+- Translate confirmation messages.
+- Maintain appropriate typography and spacing across languages.
+
+Use a centralized translation structure.
+
+Do not duplicate entire pages for each language.
+
+Do not rely on automatic browser translation.
+
+Use natural, grammatically correct language. Avoid literal machine-style translations.
+
+The architecture must allow additional languages in the future.
+
+Official family names and historical names must remain unchanged when switching languages.
+
+## 8. PAGE ONE: HOME
+
+The homepage is the primary introduction to the family.
+
+It should immediately communicate the identity, history and importance of the NYANGE RADJABU family.
+
+### Hero section
+
+Include:
+
+- Family identity and logo.
+- A powerful but respectful introduction.
+- A meaningful heritage statement.
+- A prominent EXPLORE FAMILY TREE button.
+- A secondary ABOUT OUR HISTORY button.
+
+The hero should feel prestigious and welcoming.
+
+Do not use fictional photographs of NYANGE RADJABU or his descendants.
+
+Until real historical photographs are provided, use tasteful abstract visual elements, typography and brand-based compositions.
+
+### Historical introduction
+
+Include a brief account of NYANGE RADJABU based only on the supplied historical information.
+
+Provide a link to the full history section.
+
+### Family statistics
+
+Create attractive statistic cards displaying available information:
+
+- Currently recorded members aged 15+.
+- Listed family sections.
+- Generations supported by the platform.
+- Family records awaiting verification, if such records exist.
+
+Statistics must be retrieved from a centralized data source.
+
+Do not manually hardcode the same statistics in multiple components.
+
+### Family branches
+
+Present the available family sections using elegant cards.
+
+Each card should show:
+
+- Family section name.
+- Reported member count.
+- Relevant status.
+- A link to explore available information.
+
+Do not present aggregate counts as verified individual profiles.
+
+### Family values
+
+Create a section reflecting:
+
+- Faith.
+- Unity.
+- Generosity.
+- Responsibility.
+- Family care.
+- Heritage and continuity.
+
+### Heritage preservation
+
+Explain why recording family history matters.
+
+Encourage family members to contribute historical information, photographs, corrections and family stories.
+
+### Final homepage sections
+
+Include:
+
+- Featured gallery content when real photographs become available.
+- Family leadership introduction when verified information is provided.
+- Contact Us CTA.
+- Record Me CTA.
+- Donate CTA.
+- Professional footer.
+
+## 9. PAGE TWO: FAMILY TREE
+
+This is the central feature of the platform.
+
+It must offer TWO connected experiences.
+
+### A. INTERACTIVE VISUAL FAMILY TREE
+
+Create a modern, expandable and navigable genealogy visualization.
+
+Start with NYANGE RADJABU at Level 0.
+
+Display the family generations and relationships using clearly understandable visual connections.
+
+Requirements:
+
+- Expand and collapse family branches.
+- Navigate through generations.
+- Clearly distinguish different family branches.
+- Support zooming and panning.
+- Support mobile screens.
+- Provide search and filtering.
+- Allow visitors to explore available individuals.
+- Display a detail panel when a member is selected.
+- Provide a clear route back to the original patriarch.
+
+Every relationship must be based on actual recorded data.
+
+Where individual information is unavailable, display an appropriate family branch summary rather than generating fictional individual nodes.
+
+Do not create parent-child relationships merely because two people have similar surnames.
+
+### B. SEARCHABLE FAMILY DIRECTORY
+
+Build a searchable directory connected to the same genealogy database.
+
+Provide:
+
+- Search by full name.
+- Search by available family branch.
+- Filter by generation.
+- Filter by verification status where appropriate.
+- Member detail previews.
+- Links to the corresponding location in the visual family tree.
+
+Each individual profile should eventually support:
+
+- Full name.
+- Unique member ID.
+- Profile photograph.
+- Gender.
+- Generation level.
+- Father.
+- Mother.
+- Family branch.
+- Date of birth, if available.
+- Date of death, if applicable.
+- Short biography.
+- Current location, if approved for publication.
+- Verification status.
+- Privacy settings.
+
+Do not display unavailable fields as fabricated information.
+
+Use appropriate messages such as "Information not yet recorded."
+
+### C. FAMILY BRANCH SUMMARIES
+
+The currently supplied PDF does not provide a complete individual-level genealogy.
+
+Therefore, initially build the available family branch summaries using the PDF.
+
+Allow the family tree to grow into a full individual-level genealogy as more records are collected.
+
+The system must support thousands of individuals and additional generations without requiring a complete redesign.
+
+## 10. PAGE THREE: GALLERY
+
+Create a dedicated family heritage gallery.
+
+Categories should include:
+
+- Historical photographs.
+- Family gatherings.
+- Family celebrations.
+- Family leaders.
+- Important family events.
+- Family heritage archives.
+
+Each gallery item should support:
+
+- Photograph.
+- Caption.
+- Description.
+- Date, if known.
+- Category.
+- Contributor information, if appropriate.
+- Verification or publication status.
+
+Include:
+
+- Responsive gallery grid.
+- Image preview.
+- Lightbox viewing.
+- Category filters.
+- Search where useful.
+
+IMPORTANT:
+
+Do not generate fake historical family photographs.
+
+Do not use unrelated stock photographs as if they were family archives.
+
+Until actual photographs are supplied, create attractive empty states explaining that the family archive is being developed.
+
+The future administration system must be able to add, edit, organize and archive gallery content.
+
+## 11. PAGE FOUR: ABOUT US
+
+This page must explain who the NYANGE RADJABU family is.
+
+Include the following sections:
+
+### Our Story
+A detailed family history section that can be expanded as additional information becomes available.
+
+### Our Heritage
+Explain the family's identity, history and generational connections.
+
+### Our Values
+Present the values of faith, unity, generosity, responsibility and respect.
+
+### The Legacy of NYANGE RADJABU
+Present his available biography and historical contribution to the family.
+
+### Family Leadership
+Create a professional section introducing the official family leaders.
+
+Each leadership profile should support:
+
+- Name.
+- Official position.
+- Photograph.
+- Short biography.
+- Responsibilities.
+- Official contact information.
+
+### Communication with Family Leadership
+
+Provide clearly visible communication options.
+
+Telephone numbers, email addresses and other contact details must be configurable.
+
+Do not invent leadership identities or contact details.
+
+All sections must support future content management through the administrative system.
+
+## 12. PAGE FIVE: CONTACT US
+
+Create a professional contact page.
+
+Its purpose is ordinary family communication.
+
+Include a structured form with:
+
+- Full name.
+- Phone number or email.
+- Family branch, if known.
+- Message category.
+- Subject.
+- Message.
+
+Suggested categories:
+
+- General inquiry.
+- Family information correction.
+- Suggestions.
+- Complaints.
+- Historical information.
+- Other.
+
+Provide proper validation and submission feedback.
+
+The form must be prepared to save submissions through a future backend.
+
+Never display a success message if a submission has not actually been received and saved.
+
+Include official family communication information once supplied.
+
+## 13. RECORD ME: IMPORTANT FAMILY NOTIFICATIONS
+
+This must be one of the most accessible actions on the website.
+
+The RECORD ME feature is intended for important communication with family leadership.
+
+When selected, display a clear notification component with three main options:
+
+### OPTION A: FAMILY TRAGEDY
+
+For notifying family leadership about a death or tragedy affecting a family member.
+
+Collect:
+
+- Sender's name.
+- Sender's contact.
+- Affected family member's name.
+- Family branch, if known.
+- Relevant information.
+- Additional details.
+
+Treat these submissions with sensitivity and privacy.
+
+### OPTION B: IMPORTANT FAMILY NOTICE
+
+For urgent announcements or important information that requires the attention of family leadership.
+
+Collect sender information, notification subject, category and message.
+
+### OPTION C: RECORD A NEW FAMILY MEMBER
+
+For a person who identifies as part of the family but is not yet represented in the available records.
+
+Collect:
+
+- Full name.
+- Contact information.
+- Father, if known.
+- Mother, if known.
+- Family branch, if known.
+- Generation, if known.
+- Explanation of the person's family connection.
+- Supporting information where appropriate.
+
+This is an information submission, not automatic membership verification.
+
+### IMPORTANT OPERATIONAL RULES
+
+- All submissions must initially be marked PENDING VERIFICATION.
+- No submission should automatically become public.
+- The designated family leadership must review and verify submitted information.
+- Protect sensitive information.
+- Prevent duplicate records where possible.
+- Provide clear submission confirmation only after successful backend submission.
+
+Provide a DIRECT CALL option to contact the head of the family.
+
+The telephone number must be configured through official family information.
+
+Do not invent a number.
+
+If no number has been supplied, show a properly designed unavailable or not-yet-configured state.
+
+This feature is a family notification service, not a replacement for emergency services.
+
+## 14. PAGE SIX: DONATE
+
+Create a prominent Donate action.
+
+When clicked, display a polished donation component or dedicated donation page.
+
+Include:
+
+- Why family contributions matter.
+- The purpose of family donations.
+- Official mobile money channels.
+- Official bank details.
+- Donation instructions.
+- Contribution verification contact.
+
+All payment information must be configurable.
+
+Do not invent account numbers, payment numbers, recipients or financial details.
+
+The interface must be prepared for future online payment integration.
+
+Do not pretend that online payments are operational before a payment provider has been configured.
+
+## 15. FUTURE ADMINISTRATIVE SYSTEM
+
+The administrative dashboard is NOT to be developed in this phase.
+
+However, the public website must be architected to support it.
+
+Prepare reusable data models, services, validation and components.
+
+The future admin system must eventually support management of:
+
+1. Family members.
+2. Family branches.
+3. Parent-child relationships.
+4. Generations.
+5. Family history.
+6. Family leaders.
+7. Historical events.
+8. Gallery photographs.
+9. Contact submissions.
+10. Record Me notifications.
+11. Donation information.
+12. Website announcements.
+13. Language translations.
+14. Verification records.
+
+### DATA MODEL REQUIREMENTS
+
+Use unique IDs rather than names as relationship references.
+
+A family member should have a structured record containing fields such as:
+
+- id
+- fullName
+- gender
+- generationLevel
+- fatherId
+- motherId
+- branchId
+- birthDate
+- deathDate
+- biography
+- profileImage
+- verificationStatus
+- privacyLevel
+- createdAt
+- updatedAt
+
+These are suggested logical fields, not a requirement to expose every field publicly.
+
+Support incomplete records and unknown relationships.
+
+Use structured family branch records rather than embedding all information directly in page components.
+
+### ADMIN COMPATIBILITY
+
+Prepare the architecture so administrators can eventually:
+
+- Register family members.
+- Edit family information.
+- Verify submitted records.
+- Correct family relationships.
+- Manage family branches.
+- Publish historical information.
+- Upload photographs.
+- Manage leaders.
+- Review submissions.
+- Update donation instructions.
+- Publish announcements.
+- Manage translations.
+
+The public interface must retrieve content through reusable data services.
+
+Do not hardcode content in a way that requires modifying page code every time a new family member is added.
+
+Do not create a fake admin dashboard.
+
+Do not expose administrative functionality in the public navigation.
+
+## 16. PRIVACY, SECURITY AND DATA INTEGRITY
+
+Family data is personal information.
+
+Build with privacy as a core requirement.
+
+Support:
+
+- Public and private records.
+- Consent before publishing sensitive information about living people.
+- Restricted contact information.
+- Submission validation.
+- Secure backend communication.
+- Future administrator authentication.
+- Role-based authorization.
+- Protection against unauthorized data modification.
+- Verification and audit history.
+
+Never expose private telephone numbers, personal addresses or sensitive information publicly by default.
+
+Do not expose privileged database credentials or secret API keys in frontend code.
+
+Use appropriate access rules and server-side validation.
+
+## 17. TECHNICAL ARCHITECTURE
+
+Before making changes, inspect the available project environment.
+
+Identify:
+
+- Existing framework.
+- Existing source files.
+- Installed dependencies.
+- Existing backend configuration.
+- Existing assets.
+- Current application entry points.
+
+Do not unnecessarily replace functioning code.
+
+Build a modular application with clear separation between:
+
+- Pages.
+- Reusable components.
+- Data models.
+- Data services.
+- Translation files.
+- Styling and design tokens.
+- Configuration.
+- Utilities.
+
+Use a backend-ready architecture.
+
+If a backend has already been configured, inspect it and use the existing infrastructure where appropriate.
+
+If no backend exists, implement a clearly separated data access layer and explain the backend configuration required for persistent records.
+
+Do not introduce Firebase, Supabase or another backend without checking the existing project setup and explaining the architectural decision.
+
+Do not pretend that local mock data is permanently saved.
+
+The public website must be functional even when some future integrations are not yet configured.
+
+## 18. USER EXPERIENCE AND RESPONSIVENESS
+
+Design for:
+
+- Desktop.
+- Tablet.
+- Mobile phones.
+
+Mobile usability is particularly important because many family members will access the platform through smartphones.
+
+Ensure:
+
+- Readable typography.
+- Appropriate contrast.
+- Comfortable touch targets.
+- Responsive navigation.
+- Optimized image loading.
+- Fast page transitions.
+- Meaningful loading states.
+- Clear error messages.
+- Helpful empty states.
+- Accessible forms.
+- Keyboard accessibility where applicable.
+
+Avoid excessive animation.
+
+Use animation to improve understanding and experience, not simply for decoration.
+
+The Family Tree must receive special attention on smaller screens.
+
+## 19. PERFORMANCE AND MAINTAINABILITY
+
+The platform must be optimized for real-world usage.
+
+Requirements:
+
+- Reusable components.
+- Efficient rendering.
+- Lazy-loaded images.
+- Optimized assets.
+- Appropriate caching.
+- Clean code organization.
+- Avoid unnecessary dependencies.
+- Avoid duplicated logic.
+- Maintainable translation architecture.
+- Scalable genealogy visualization.
+
+Do not build a family tree that attempts to render thousands of nodes simultaneously when only a small portion is needed.
+
+Use expandable branches, pagination or progressive rendering as appropriate.
+
+## 20. DEVELOPMENT WORKFLOW
+
+Follow this development process.
+
+### STEP 1: PROJECT INVESTIGATION
+
+Inspect the existing project before modifying it.
+
+Understand the framework, available files and dependencies.
+
+### STEP 2: PDF EXTRACTION
+
+Read the complete supplied PDF.
+
+Extract all available family section names, individual names and reported numbers.
+
+Preserve the original information.
+
+Identify ambiguities and missing relationships.
+
+### STEP 3: DATA ARCHITECTURE
+
+Design the data models for family members, branches, relationships, history and other website content.
+
+Ensure the structure supports the future admin dashboard.
+
+### STEP 4: BRAND AND DESIGN SYSTEM
+
+Implement the official colors:
+
+Primary: #064734
+
+Secondary: #E0FFC2
+
+Supporting: #000000 and #FFFFFF.
+
+Create the original family identity and a consistent design system.
+
+### STEP 5: PUBLIC WEBSITE DEVELOPMENT
+
+Build all public pages and reusable components.
+
+Ensure all navigation, interactions, language switching and forms work appropriately.
+
+### STEP 6: FAMILY TREE IMPLEMENTATION
+
+Implement the initial family branch summaries using the supplied PDF.
+
+Provide both visual genealogy and searchable directory experiences.
+
+Do not fabricate missing individual-level relationships.
+
+### STEP 7: QUALITY ASSURANCE
+
+Test:
+
+- All pages.
+- Navigation.
+- Language switching.
+- Family tree interactions.
+- Search and filters.
+- Forms.
+- Mobile responsiveness.
+- Accessibility.
+- Data integrity.
+- Loading and error states.
+
+### STEP 8: DOCUMENTATION
+
+Provide a clear implementation report describing:
+
+- What has been built.
+- Project architecture.
+- Data models.
+- Information extracted from the PDF.
+- Known missing information.
+- Features that require backend configuration.
+- Security considerations.
+- Remaining tasks.
+- Recommended next development milestones.
+
+## 21. ACCEPTANCE CRITERIA
+
+The first phase is complete only when the following requirements are satisfied:
+
+1. A complete and polished public website exists.
+2. All seven main navigation destinations and the Record Me functionality are accessible.
+3. The official brand colors are applied consistently.
+4. The website supports English, Swahili and Kinyarwanda.
+5. The homepage presents the available family history and accurate statistics.
+6. The Family Tree offers both visual and searchable experiences.
+7. The supplied PDF information is represented accurately.
+8. Missing genealogy information is clearly identified.
+9. The gallery is prepared for actual family photographs.
+10. About Us presents the family identity and accommodates future leadership information.
+11. Contact Us works with appropriate submission handling.
+12. Record Me supports the three specified notification categories.
+13. Donate displays configurable official donation information.
+14. The public system is prepared for future admin integration.
+15. Privacy and security are considered from the beginning.
+16. The website is responsive and usable on mobile.
+17. There are no broken navigation links or misleading success messages.
+18. The application is maintainable and documented.
+
+## 22. FINAL DEVELOPMENT INSTRUCTIONS
+
+Build the actual working application.
+
+Do not stop after producing a design concept, wireframe or static screenshot.
+
+Do not create unrelated sample family members to make the genealogy look complete.
+
+Do not invent historical photographs, family relationships, leaders, contact numbers or payment information.
+
+Do not compromise the official brand colors.
+
+Do not build the administrative dashboard during this phase.
+
+Do not unnecessarily rewrite existing working code.
+
+Where information is missing, implement a professional placeholder and clearly document what is required.
+
+Make reasonable implementation decisions independently, but do not invent family facts or make irreversible architectural changes without explaining them.
+
+Prioritize historical accuracy, excellent design, usability, scalability and maintainability.
+
+The final result must be a credible digital heritage platform worthy of preserving the legacy of NYANGE RADJABU for generations to come.
+
+BEGIN BY INVESTIGATING THE PROJECT AND THE ATTACHED PDF, THEN PROCEED WITH IMPLEMENTATION.

@@ -1,0 +1,149 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Hardened Global Helpers
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email == 'uwabatonadjibullah@gmail.com' && request.auth.token.email_verified == true)
+      );
+    }
+
+    // Validation Blueprint for Descendant Census Submissions
+    function isValidSubmission(data) {
+      return data.keys().hasAll([
+        'id', 'parentId', 'parentName', 'branchId', 'branchName', 
+        'children', 'status', 'submittedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'id', 'parentId', 'parentName', 'parentGenerationLevel', 'branchId', 'branchName', 
+        'children', 'contributorName', 'contributorContact', 'relationshipExplanation', 
+        'additionalNotes', 'status', 'submittedAt', 'reviewedAt', 'reviewedBy'
+      ]) &&
+      data.id is string && data.id.size() <= 128 &&
+      data.parentId is string && data.parentId.size() <= 128 &&
+      data.parentName is string && data.parentName.size() <= 200 &&
+      (!('parentGenerationLevel' in data) || data.parentGenerationLevel is number) &&
+      data.branchId is string && data.branchId.size() <= 128 &&
+      data.branchName is string && data.branchName.size() <= 200 &&
+      data.children is list && data.children.size() <= 50 &&
+      (!('contributorName' in data) || (data.contributorName is string && data.contributorName.size() <= 200)) &&
+      (!('contributorContact' in data) || (data.contributorContact is string && data.contributorContact.size() <= 200)) &&
+      (!('relationshipExplanation' in data) || (data.relationshipExplanation is string && data.relationshipExplanation.size() <= 500)) &&
+      (!('additionalNotes' in data) || (data.additionalNotes is string && data.additionalNotes.size() <= 2000)) &&
+      data.status in ['pending_approval', 'approved', 'rejected', 'requires_clarification'] &&
+      data.submittedAt is string && data.submittedAt.size() <= 50 &&
+      (!('reviewedAt' in data) || (data.reviewedAt is string && data.reviewedAt.size() <= 50)) &&
+      (!('reviewedBy' in data) || (data.reviewedBy is string && data.reviewedBy.size() <= 200));
+    }
+
+    // Validation Blueprint for Record Me Emergency Notices
+    function isValidNotification(data) {
+      return data.keys().hasAll([
+        'id', 'type', 'senderName', 'senderContact', 'details', 'status', 'submittedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'id', 'type', 'senderName', 'senderContact', 'affectedName', 'branchId', 
+        'fatherName', 'motherName', 'generationLevel', 'connectionStory', 
+        'subject', 'details', 'status', 'submittedAt'
+      ]) &&
+      data.id is string && data.id.size() <= 128 &&
+      data.type in ['tragedy', 'urgent_notice', 'new_member'] &&
+      data.senderName is string && data.senderName.size() <= 200 &&
+      data.senderContact is string && data.senderContact.size() <= 200 &&
+      (!('affectedName' in data) || (data.affectedName is string && data.affectedName.size() <= 200)) &&
+      (!('branchId' in data) || (data.branchId is string && data.branchId.size() <= 128)) &&
+      (!('fatherName' in data) || (data.fatherName is string && data.fatherName.size() <= 200)) &&
+      (!('motherName' in data) || (data.motherName is string && data.motherName.size() <= 200)) &&
+      (!('generationLevel' in data) || (data.generationLevel is string && data.generationLevel.size() <= 50)) &&
+      (!('connectionStory' in data) || (data.connectionStory is string && data.connectionStory.size() <= 2000)) &&
+      (!('subject' in data) || (data.subject is string && data.subject.size() <= 300)) &&
+      data.details is string && data.details.size() <= 3000 &&
+      data.status is string && data.status.size() <= 50 &&
+      data.submittedAt is string && data.submittedAt.size() <= 50;
+    }
+
+    // Validation Blueprint for Admin role records
+    function isValidAdmin(data) {
+      return data.keys().hasAll(['email', 'role']) &&
+        data.keys().hasOnly(['email', 'role', 'addedAt']) &&
+        data.email is string && data.email.size() <= 200 &&
+        data.role in ['superadmin', 'council_reviewer'] &&
+        (!('addedAt' in data) || (data.addedAt is string && data.addedAt.size() <= 50));
+    }
+
+    // Health check collection for client connection validation
+    match /test/{docId} {
+      allow read: if isValidId(docId);
+      allow write: if isAdmin();
+    }
+
+    // Community Census Submissions Collection
+    match /submissions/{submissionId} {
+      // Family members and public can read community census records
+      allow read: if isValidId(submissionId);
+
+      // Any community member can propose descendants (pending approval)
+      allow create: if isValidId(submissionId) &&
+        isValidSubmission(incoming()) &&
+        incoming().status == 'pending_approval';
+
+      // Only council administrators can review, approve, or reject submissions
+      allow update: if isValidId(submissionId) &&
+        isValidSubmission(incoming()) &&
+        isAdmin() &&
+        incoming().id == existing().id &&
+        incoming().parentId == existing().parentId;
+
+      // Only council administrators can delete records
+      allow delete: if isValidId(submissionId) && isAdmin();
+    }
+
+    // Record Me Emergency & Member Notices
+    match /notifications/{notificationId} {
+      // Council admins can read notifications; submitters can read their own receipt
+      allow read: if isValidId(notificationId);
+
+      // Public family members can submit urgent notices or record requests
+      allow create: if isValidId(notificationId) &&
+        isValidNotification(incoming()) &&
+        incoming().status == 'PENDING_VERIFICATION';
+
+      // Only council admins can update or clear notifications
+      allow update: if isValidId(notificationId) &&
+        isValidNotification(incoming()) &&
+        isAdmin();
+
+      allow delete: if isValidId(notificationId) && isAdmin();
+    }
+
+    // Council Admins Collection
+    match /admins/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin() && isValidId(userId) && isValidAdmin(incoming());
+    }
+  }
+}
