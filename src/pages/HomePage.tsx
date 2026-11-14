@@ -1,438 +1,144 @@
-import React from 'react';
-import { Language, NavigationPage } from '../types';
-import { TRANSLATIONS } from '../i18n/translations';
-import { 
-  PATRIARCH_INFO, 
-  FAMILY_BRANCHES, 
-  FAMILY_VALUES,
-  REPORTED_TOTAL_15_PLUS,
-  REPORTED_SECTIONS_COUNT,
-  PENDING_FAMILIES_COUNT,
-  UNRECORDED_BRANCHES_NOTE
-} from '../data/familyData';
-import { BrandLogo } from '../components/BrandLogo';
-import { 
-  GitFork, 
-  Users, 
-  FileText, 
-  Clock, 
-  ShieldCheck, 
-  ArrowRight, 
-  BookOpen, 
-  Layers, 
-  MapPin, 
-  AlertCircle
-} from 'lucide-react';
+import { ArrowRight, GitFork, PenLine, Search } from 'lucide-react';
+import { useState, type FormEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Emblem } from '../components/Logo';
+import { useRecordMe } from '../components/RecordMeContext';
+import { ButtonLink, inputClass } from '../components/ui';
+import { PENDING_FAMILIES_COUNT, REPORTED_TOTAL_15_PLUS, REPORT_SECTIONS } from '../data/seed';
+import { useI18n } from '../i18n';
+import { pick, useSiteContent } from '../lib/content';
+import { getChildren } from '../lib/genealogy';
+import { useRegistry } from '../lib/registry';
+import { useMeta } from '../lib/useMeta';
 
-interface HomePageProps {
-  currentLanguage: Language;
-  onNavigate: (page: NavigationPage, params?: { branchId?: string }) => void;
-  onOpenRecordMe: () => void;
-}
+export default function HomePage() {
+  const { t, lang } = useI18n();
+  const { openRecordMe } = useRecordMe();
+  const { index } = useRegistry();
+  const content = useSiteContent();
+  const navigate = useNavigate();
+  const [q, setQ] = useState('');
+  useMeta('');
 
-export const HomePage: React.FC<HomePageProps> = ({
-  currentLanguage,
-  onNavigate,
-  onOpenRecordMe
-}) => {
-  const t = TRANSLATIONS[currentLanguage];
+  const sections = index.rootId ? getChildren(index, index.rootId) : [];
+  const onSearch = (e: FormEvent) => {
+    e.preventDefault();
+    navigate(`/family-tree?tab=list${q.trim() ? `&q=${encodeURIComponent(q.trim())}` : ''}`);
+  };
+  const bio = pick(content.biography, lang);
+  const firstSentences = bio.split(/(?<=\.)\s+/).slice(0, 2).join(' ');
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-16">
-      {/* HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#064734] via-[#053d2c] to-[#043124] text-white pt-12 pb-20 sm:pt-16 sm:pb-28 px-4 sm:px-6 lg:px-8 border-b border-[#064734]/40">
-        {/* Subtle geometric pattern overlay reflecting Rwandan Imigongo & Islamic geometric harmony */}
-        <div 
-          className="absolute inset-0 opacity-10 pointer-events-none"
-          style={{
-            backgroundImage: `radial-gradient(#E0FFC2 1px, transparent 1px), radial-gradient(#E0FFC2 1px, #064734 1px)`,
-            backgroundSize: '40px 40px',
-            backgroundPosition: '0 0, 20px 20px'
-          }}
-        />
-
-        <div className="relative max-w-5xl mx-auto text-center space-y-8">
-          {/* Emblem & Official Archive Kicker */}
-          <div className="inline-flex flex-col items-center gap-3">
-            <BrandLogo variant="icon" size="xl" lightMode={true} />
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E0FFC2]/15 border border-[#E0FFC2]/30 text-[#E0FFC2] text-xs font-semibold tracking-wider uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#E0FFC2]" />
-              <span>{t.officialBadge}</span>
-              <span className="text-[#E0FFC2]/50">·</span>
-              <span>Kamembe, Rwanda</span>
-            </div>
-          </div>
-
-          {/* Hero Headline */}
-          <div className="space-y-4 max-w-3xl mx-auto">
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold tracking-tight text-white leading-tight">
-              {t.heroTitle}
-            </h1>
-            <p className="text-base sm:text-lg text-stone-200/90 leading-relaxed font-sans max-w-2xl mx-auto">
-              {t.heroSubtitle}
-            </p>
-          </div>
-
-          {/* Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2">
-            <button
-              onClick={() => onNavigate('family-tree')}
-              className="w-full sm:w-auto px-6 py-3.5 bg-[#E0FFC2] hover:bg-[#cbf4a4] text-[#064734] font-bold text-sm rounded-xl shadow-md transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 active:scale-95"
-            >
-              <GitFork className="w-4 h-4" />
-              <span>{t.heroExploreTree}</span>
-            </button>
-
-            <button
-              onClick={() => onNavigate('about')}
-              className="w-full sm:w-auto px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold text-sm rounded-xl transition-all duration-150 cursor-pointer flex items-center justify-center gap-2"
-            >
-              <BookOpen className="w-4 h-4" />
-              <span>{t.heroAboutHistory}</span>
-            </button>
-
-            <button
-              onClick={onOpenRecordMe}
-              className="w-full sm:w-auto px-6 py-3.5 bg-black hover:bg-neutral-800 text-white border border-black font-bold text-sm rounded-xl transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 shadow-md active:scale-95"
-            >
-              <AlertCircle className="w-4 h-4 text-white" />
-              <span>{t.navRecordMe}</span>
-            </button>
-          </div>
-
-          {/* Preliminary Census Badge Strip */}
-          <div className="pt-6 border-t border-white/15 max-w-xl mx-auto">
-            <p className="text-xs text-[#E0FFC2]/80 flex items-center justify-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-[#E0FFC2] shrink-0" />
-              <span>
-                398+ {t.statRecordedMembers} · 8 {t.statListedSections} · 7 {t.statPendingBranches}
-              </span>
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* STATISTIC METRIC CARDS (Centralized Source) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 sm:-mt-14 relative z-10">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-          {/* Card 1: Recorded 15+ Members */}
-          <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-stone-200 flex flex-col justify-between">
-            <div className="flex items-center justify-between text-[#064734] mb-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
-                Audited Count
-              </span>
-              <div className="p-2 rounded-lg bg-[#064734]/5 text-[#064734]">
-                <Users className="w-4 h-4" />
-              </div>
-            </div>
-            <div>
-              <div className="text-3xl sm:text-4xl font-serif font-bold text-[#064734] tabular-nums">
-                {REPORTED_TOTAL_15_PLUS}+
-              </div>
-              <p className="text-xs sm:text-sm font-semibold text-stone-900 mt-1">
-                {t.statRecordedMembers}
-              </p>
-              <p className="text-[11px] text-stone-500 mt-0.5">
-                {t.statRecordedMembersSub}
-              </p>
-            </div>
-          </div>
-
-          {/* Card 2: Reported Family Sections */}
-          <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-stone-200 flex flex-col justify-between">
-            <div className="flex items-center justify-between text-[#064734] mb-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
-                Audit Sections
-              </span>
-              <div className="p-2 rounded-lg bg-[#064734]/5 text-[#064734]">
-                <FileText className="w-4 h-4" />
-              </div>
-            </div>
-            <div>
-              <div className="text-3xl sm:text-4xl font-serif font-bold text-[#064734] tabular-nums">
-                {REPORTED_SECTIONS_COUNT}
-              </div>
-              <p className="text-xs sm:text-sm font-semibold text-stone-900 mt-1">
-                {t.statListedSections}
-              </p>
-              <p className="text-[11px] text-stone-500 mt-0.5">
-                {t.statListedSectionsSub}
-              </p>
-            </div>
-          </div>
-
-          {/* Card 3: Pending Census Submissions */}
-          <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-stone-200 flex flex-col justify-between">
-            <div className="flex items-center justify-between text-amber-700 mb-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
-                Census Ongoing
-              </span>
-              <div className="p-2 rounded-lg bg-amber-50 text-amber-800">
-                <Clock className="w-4 h-4" />
-              </div>
-            </div>
-            <div>
-              <div className="text-3xl sm:text-4xl font-serif font-bold text-amber-800 tabular-nums">
-                {PENDING_FAMILIES_COUNT}
-              </div>
-              <p className="text-xs sm:text-sm font-semibold text-stone-900 mt-1">
-                {t.statPendingBranches}
-              </p>
-              <p className="text-[11px] text-stone-500 mt-0.5">
-                {t.statPendingBranchesSub}
-              </p>
-            </div>
-          </div>
-
-          {/* Card 4: Generational Span */}
-          <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-stone-200 flex flex-col justify-between">
-            <div className="flex items-center justify-between text-[#064734] mb-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
-                Lineage Depth
-              </span>
-              <div className="p-2 rounded-lg bg-[#064734]/5 text-[#064734]">
-                <Layers className="w-4 h-4" />
-              </div>
-            </div>
-            <div>
-              <div className="text-3xl sm:text-4xl font-serif font-bold text-[#064734] tabular-nums">
-                L0 – L5+
-              </div>
-              <p className="text-xs sm:text-sm font-semibold text-stone-900 mt-1">
-                {t.statGenerations}
-              </p>
-              <p className="text-[11px] text-stone-500 mt-0.5">
-                {t.statGenerationsSub}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CENSUS AUDIT OFFICIAL NOTICE BANNER */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#E0FFC2]/50 border border-[#064734]/20 rounded-2xl p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div className="p-3 bg-[#064734] text-[#E0FFC2] rounded-xl shrink-0 mt-0.5">
-              <FileText className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-[#064734] uppercase tracking-wider">
-                {t.censusBannerTitle}
-              </h3>
-              <p className="text-xs sm:text-sm text-stone-700 mt-1 leading-relaxed max-w-3xl">
-                {t.censusBannerText}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={onOpenRecordMe}
-            className="shrink-0 px-4 py-2.5 bg-[#064734] hover:bg-[#0a5841] text-[#E0FFC2] text-xs font-bold rounded-xl transition-colors cursor-pointer flex items-center gap-1.5"
-          >
-            <span>{t.ctaRecordButton}</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </section>
-
-      {/* HISTORICAL INTRODUCTION OF NYANGE RADJABU */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl p-6 sm:p-10 lg:p-12 border border-stone-200 shadow-xs">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            {/* Visual Emblem & Historical Framing */}
-            <div className="lg:col-span-5 flex flex-col items-center text-center p-6 sm:p-8 bg-[#064734]/5 rounded-2xl border border-[#064734]/15">
-              <BrandLogo variant="icon" size="xl" />
-              <div className="mt-4">
-                <span className="text-xs uppercase tracking-widest text-stone-500 font-semibold block">
-                  Original Patriarch · Level 0
-                </span>
-                <h3 className="text-2xl font-serif font-bold text-[#064734] mt-1">
-                  NYANGE RADJABU
-                </h3>
-                <div className="flex items-center justify-center gap-2 text-xs text-stone-600 mt-2">
-                  <MapPin className="w-3.5 h-3.5 text-[#064734]" />
-                  <span>Kamembe, Rwanda · Burundi</span>
-                </div>
-              </div>
-
-              {/* Verified historical note quote */}
-              <div className="mt-6 pt-6 border-t border-stone-200/80 text-left w-full">
-                <p className="text-xs italic text-stone-700 leading-relaxed font-serif">
-                  {t.patriarchQuote}
-                </p>
-              </div>
-            </div>
-
-            {/* Historical Narrative Content */}
-            <div className="lg:col-span-7 space-y-6">
-              <div>
-                <span className="text-xs uppercase tracking-widest text-[#064734] font-bold">
-                  {t.patriarchSectionTitle}
-                </span>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-stone-900 mt-1">
-                  {t.patriarchSectionSubtitle}
-                </h2>
-              </div>
-
-              <div className="prose text-stone-700 space-y-4 text-sm sm:text-base leading-relaxed">
-                <p>
-                  {PATRIARCH_INFO.biography?.[currentLanguage]}
-                </p>
-                <p className="text-stone-600 text-xs sm:text-sm">
-                  Our family foundation traces back to the historic town of Kamembe, Cyangugu sector, situated on the shores of Lake Kivu in Western Rwanda. Here, Babu Nyange Radjabu established the family hearth, guiding his households with deep faith, mutual respect, and unfaltering dedication to community wellbeing.
-                </p>
-              </div>
-
-              <div className="pt-2 flex flex-wrap items-center gap-4">
-                <button
-                  onClick={() => onNavigate('about')}
-                  className="px-5 py-2.5 bg-[#064734] hover:bg-[#0a5841] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer flex items-center gap-2"
-                >
-                  <span>{t.readFullBiography}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => onNavigate('family-tree')}
-                  className="px-5 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
-                >
-                  {t.heroExploreTree}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* DOCUMENTED FAMILY SECTIONS (8 CARDS) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+    <>
+      {/* Hero: who we are + the two things most visitors come for */}
+      <section className="bg-primary text-white">
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:py-16 lg:grid-cols-[1.4fr_1fr] lg:items-center">
           <div>
-            <span className="text-xs uppercase tracking-widest text-[#064734] font-bold">
-              {t.branchesSectionTitle}
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 mt-1">
-              {t.branchesSectionSubtitle}
-            </h2>
+            <p className="mb-3 font-semibold text-mint">{t('homeEyebrow')}</p>
+            <h1 className="font-serif text-4xl leading-tight sm:text-5xl">{t('homeTitle')}</h1>
+            <p className="mt-4 max-w-xl text-lg text-white/90">{t('homeIntro')}</p>
+
+            <form onSubmit={onSearch} role="search" className="mt-8 max-w-xl">
+              <label htmlFor="home-search" className="mb-2 block font-semibold text-mint">{t('homeSearchLabel')}</label>
+              <div className="flex gap-2">
+                <input id="home-search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('homeSearchPlaceholder')} className={`${inputClass} border-white`} />
+                <button type="submit" className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-2 rounded-md bg-mint px-4 font-semibold text-primary hover:bg-white">
+                  <Search className="h-5 w-5" aria-hidden />
+                  <span className="hidden sm:inline">{t('homeSearchButton')}</span>
+                  <span className="sr-only sm:hidden">{t('homeSearchButton')}</span>
+                </button>
+              </div>
+            </form>
+
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link to="/family-tree" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-white px-5 font-semibold text-primary hover:bg-mint">
+                <GitFork className="h-5 w-5" aria-hidden /> {t('homeExploreTree')}
+              </Link>
+              <button type="button" onClick={() => openRecordMe('new_member')} className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-md border border-mint px-5 font-semibold text-white hover:bg-white/10">
+                <PenLine className="h-5 w-5" aria-hidden /> {t('homeRecordMe')}
+              </button>
+            </div>
           </div>
-          <button
-            onClick={() => onNavigate('family-tree')}
-            className="text-xs font-bold text-[#064734] hover:underline flex items-center gap-1 cursor-pointer self-start md:self-auto"
-          >
-            <span>{t.heroExploreTree}</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          <div className="hidden justify-center lg:flex">
+            <Emblem light className="h-64 w-64" />
+          </div>
         </div>
+      </section>
 
-        {/* 8 Family Branch Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {FAMILY_BRANCHES.map((branch) => (
-            <div
-              key={branch.id}
-              onClick={() => onNavigate('family-tree', { branchId: branch.id })}
-              className="bg-white rounded-2xl p-5 border border-stone-200 shadow-xs hover:border-[#064734] hover:shadow-md transition-all flex flex-col justify-between cursor-pointer group"
-            >
-              <div>
-                <div className="flex items-center justify-between text-xs mb-3">
-                  <span className="font-mono text-[11px] font-semibold text-stone-400 group-hover:text-[#064734]">
-                    {branch.code}
-                  </span>
-                  <span className="text-[11px] font-bold text-[#064734] bg-[#E0FFC2]/50 px-2 py-0.5 rounded-full">
-                    {branch.reportedCount15Plus} {t.treeNodeMembers}
-                  </span>
-                </div>
-
-                <h3 className="text-base font-serif font-bold text-stone-900 group-hover:text-[#064734] transition-colors leading-snug">
-                  {branch.name}
-                </h3>
-
-                <p className="text-xs text-stone-600 mt-2 leading-relaxed">
-                  {branch.summary[currentLanguage]}
-                </p>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-stone-100 flex items-center justify-between">
-                <span className="text-[11px] text-stone-500">
-                  {branch.grandchildrenCount} Grandchildren
-                </span>
-                <span
-                  className="text-xs font-bold text-[#064734] group-hover:underline flex items-center gap-1"
-                >
-                  <span>{t.learnMore}</span>
-                  <span>&rarr;</span>
-                </span>
-              </div>
+      {/* Census */}
+      <section className="mx-auto max-w-6xl px-4 py-12" aria-labelledby="census-title">
+        <h2 id="census-title" className="font-serif text-3xl text-ink">{t('censusTitle')}</h2>
+        <dl className="mt-6 grid gap-4 sm:grid-cols-3">
+          {[
+            [`${REPORTED_TOTAL_15_PLUS}+`, t('censusMembers')],
+            [String(REPORT_SECTIONS.length), t('censusSections')],
+            [String(PENDING_FAMILIES_COUNT), t('censusPending')],
+          ].map(([n, label]) => (
+            <div key={label} className="rounded-lg border border-line bg-white p-5">
+              <dt className="sr-only">{label}</dt>
+              <dd>
+                <span className="block font-serif text-4xl text-primary">{n}</span>
+                <span className="mt-1 block text-ink">{label}</span>
+              </dd>
             </div>
           ))}
-        </div>
+        </dl>
+        <p className="mt-4 max-w-3xl text-muted">{t('censusNote')}</p>
+      </section>
 
-        {/* Note on the 7 Unrecorded Branches */}
-        <div className="mt-6 p-4 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-600 leading-relaxed flex items-start gap-3">
-          <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-          <div>
-            <span className="font-bold text-stone-800">Pending Census Notice: </span>
-            <span>{UNRECORDED_BRANCHES_NOTE[currentLanguage]}</span>
+      {/* Patriarch */}
+      <section className="border-y border-line bg-white">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-[auto_1fr] md:items-start">
+          <Emblem className="h-24 w-24" />
+          <div className="max-w-3xl">
+            <p className="font-semibold text-primary">{t('patriarchRole')}</p>
+            <h2 className="mt-1 font-serif text-3xl">{t('patriarchTitle')}</h2>
+            <p className="mt-4 text-lg leading-relaxed text-ink">{firstSentences}</p>
+            <Link to="/history" className="mt-4 inline-flex min-h-11 items-center gap-2 font-semibold text-primary underline">
+              {t('readHistory')} <ArrowRight className="h-5 w-5" aria-hidden />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* FAMILY CORE VALUES */}
-      <section className="bg-stone-50 border-y border-stone-200 py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto space-y-10">
-          <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs uppercase tracking-widest text-[#064734] font-bold">
-              {t.valuesSectionTitle}
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 mt-1">
-              {t.valuesSectionSubtitle}
-            </h2>
-          </div>
+      {/* Family sections */}
+      <section className="mx-auto max-w-6xl px-4 py-12" aria-labelledby="sections-title">
+        <h2 id="sections-title" className="font-serif text-3xl">{t('sectionsTitle')}</h2>
+        <p className="mt-2 max-w-3xl text-muted">{t('sectionsIntro')}</p>
+        <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {sections.map((s) => (
+            <li key={s.id}>
+              <Link to={`/person/${encodeURIComponent(s.id)}`} className="flex h-full flex-col rounded-lg border border-line bg-white p-4 hover:border-primary hover:shadow-sm">
+                <span className="font-semibold text-ink">{s.fullName}</span>
+                <span className="mt-auto pt-3 text-muted">
+                  {s.reportedCount15Plus !== undefined && (
+                    <>
+                      <strong className="text-primary">{s.reportedCount15Plus}</strong> {t('sectionMembers')} ·{' '}
+                    </>
+                  )}
+                  {getChildren(index, s.id).length} {t('sectionHouseholds')}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {FAMILY_VALUES.map((val) => (
-              <div
-                key={val.id}
-                className="bg-white rounded-2xl p-6 border border-stone-200 shadow-xs space-y-2"
-              >
-                <div className="w-2 h-2 rounded-full bg-[#064734] mb-2" />
-                <h3 className="text-lg font-serif font-bold text-[#064734]">
-                  {val.title[currentLanguage]}
-                </h3>
-                <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-                  {val.desc[currentLanguage]}
-                </p>
-              </div>
-            ))}
+      {/* Single, calm call to action */}
+      <section className="bg-mint">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-12 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-2xl">
+            <h2 className="font-serif text-3xl text-primary">{t('contributeTitle')}</h2>
+            <p className="mt-2 text-lg text-ink">{t('contributeText')}</p>
+          </div>
+          <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+            <button type="button" onClick={() => openRecordMe('new_member')} className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-md bg-primary px-5 font-semibold text-white hover:bg-primary-hover">
+              <PenLine className="h-5 w-5" aria-hidden /> {t('contributeRecord')}
+            </button>
+            <ButtonLink to="/contact" variant="secondary" className="min-h-12">{t('contributeContact')}</ButtonLink>
           </div>
         </div>
       </section>
-
-      {/* HERITAGE PRESERVATION CTA */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#064734] text-white rounded-3xl p-8 sm:p-12 relative overflow-hidden">
-          <div className="relative z-10 max-w-2xl space-y-4">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-white">
-              {t.ctaPreserveTitle}
-            </h2>
-            <p className="text-xs sm:text-sm text-stone-200 leading-relaxed">
-              {t.ctaPreserveText}
-            </p>
-            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <button
-                onClick={onOpenRecordMe}
-                className="px-5 py-3 bg-black hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer text-center border border-black shadow-md"
-              >
-                {t.ctaRecordButton}
-              </button>
-              <button
-                onClick={() => onNavigate('contact')}
-                className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold text-xs rounded-xl transition-colors cursor-pointer text-center"
-              >
-                {t.ctaContactButton}
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+    </>
   );
-};
+}

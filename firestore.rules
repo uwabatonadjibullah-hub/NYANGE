@@ -1,149 +1,279 @@
 rules_version = '2';
 
+// ============================================================================
+// NYANGE RADJABU Family Heritage — Firestore security rules
+//
+// Roles live in /admins/{uid} (created by a superadmin, or by hand in the
+// Firebase console for the very first superadmin — see README "First admin").
+//   superadmin : everything, including managing administrators
+//   editor     : edit the family registry and website content + reviewer rights
+//   reviewer   : read and decide on claims, Record Me notices and messages
+// Admins must sign in with Google and have a verified e-mail address.
+//
+// Public visitors can:
+//   - read the family registry (/persons) and website content (/content/site)
+//   - CREATE (never read back) claims, Record Me notices and contact messages,
+//     which are strictly validated below.
+// ============================================================================
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Global Safety Net: Default deny all
+    // ---------- Default: deny everything not matched below ----------
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // Hardened Global Helpers
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
-    }
-
-    function incoming() {
-      return request.resource.data;
-    }
-
-    function existing() {
-      return resource.data;
-    }
-
-    function isSignedIn() {
+    // ---------- Helpers ----------
+    function signedIn() {
       return request.auth != null;
     }
 
+    function adminDoc() {
+      return get(/databases/$(database)/documents/admins/$(request.auth.uid)).data;
+    }
+
     function isAdmin() {
-      return isSignedIn() && (
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
-        (request.auth.token.email == 'uwabatonadjibullah@gmail.com' && request.auth.token.email_verified == true)
-      );
+      return signedIn()
+        && request.auth.token.email_verified == true
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && adminDoc().get('active', true) == true;
     }
 
-    // Validation Blueprint for Descendant Census Submissions
-    function isValidSubmission(data) {
-      return data.keys().hasAll([
-        'id', 'parentId', 'parentName', 'branchId', 'branchName', 
-        'children', 'status', 'submittedAt'
-      ]) &&
-      data.keys().hasOnly([
-        'id', 'parentId', 'parentName', 'parentGenerationLevel', 'branchId', 'branchName', 
-        'children', 'contributorName', 'contributorContact', 'relationshipExplanation', 
-        'additionalNotes', 'status', 'submittedAt', 'reviewedAt', 'reviewedBy'
-      ]) &&
-      data.id is string && data.id.size() <= 128 &&
-      data.parentId is string && data.parentId.size() <= 128 &&
-      data.parentName is string && data.parentName.size() <= 200 &&
-      (!('parentGenerationLevel' in data) || data.parentGenerationLevel is number) &&
-      data.branchId is string && data.branchId.size() <= 128 &&
-      data.branchName is string && data.branchName.size() <= 200 &&
-      data.children is list && data.children.size() <= 50 &&
-      (!('contributorName' in data) || (data.contributorName is string && data.contributorName.size() <= 200)) &&
-      (!('contributorContact' in data) || (data.contributorContact is string && data.contributorContact.size() <= 200)) &&
-      (!('relationshipExplanation' in data) || (data.relationshipExplanation is string && data.relationshipExplanation.size() <= 500)) &&
-      (!('additionalNotes' in data) || (data.additionalNotes is string && data.additionalNotes.size() <= 2000)) &&
-      data.status in ['pending_approval', 'approved', 'rejected', 'requires_clarification'] &&
-      data.submittedAt is string && data.submittedAt.size() <= 50 &&
-      (!('reviewedAt' in data) || (data.reviewedAt is string && data.reviewedAt.size() <= 50)) &&
-      (!('reviewedBy' in data) || (data.reviewedBy is string && data.reviewedBy.size() <= 200));
+    function hasRole(roles) {
+      return isAdmin() && adminDoc().role in roles;
     }
 
-    // Validation Blueprint for Record Me Emergency Notices
-    function isValidNotification(data) {
-      return data.keys().hasAll([
-        'id', 'type', 'senderName', 'senderContact', 'details', 'status', 'submittedAt'
-      ]) &&
-      data.keys().hasOnly([
-        'id', 'type', 'senderName', 'senderContact', 'affectedName', 'branchId', 
-        'fatherName', 'motherName', 'generationLevel', 'connectionStory', 
-        'subject', 'details', 'status', 'submittedAt'
-      ]) &&
-      data.id is string && data.id.size() <= 128 &&
-      data.type in ['tragedy', 'urgent_notice', 'new_member'] &&
-      data.senderName is string && data.senderName.size() <= 200 &&
-      data.senderContact is string && data.senderContact.size() <= 200 &&
-      (!('affectedName' in data) || (data.affectedName is string && data.affectedName.size() <= 200)) &&
-      (!('branchId' in data) || (data.branchId is string && data.branchId.size() <= 128)) &&
-      (!('fatherName' in data) || (data.fatherName is string && data.fatherName.size() <= 200)) &&
-      (!('motherName' in data) || (data.motherName is string && data.motherName.size() <= 200)) &&
-      (!('generationLevel' in data) || (data.generationLevel is string && data.generationLevel.size() <= 50)) &&
-      (!('connectionStory' in data) || (data.connectionStory is string && data.connectionStory.size() <= 2000)) &&
-      (!('subject' in data) || (data.subject is string && data.subject.size() <= 300)) &&
-      data.details is string && data.details.size() <= 3000 &&
-      data.status is string && data.status.size() <= 50 &&
-      data.submittedAt is string && data.submittedAt.size() <= 50;
+    function isSuperadmin() { return hasRole(['superadmin']); }
+    function isEditor()     { return hasRole(['superadmin', 'editor']); }
+    function isReviewer()   { return hasRole(['superadmin', 'editor', 'reviewer', 'council_reviewer']); }
+
+    function str(v, min, max) {
+      return v is string && v.size() >= min && v.size() <= max;
     }
 
-    // Validation Blueprint for Admin role records
-    function isValidAdmin(data) {
-      return data.keys().hasAll(['email', 'role']) &&
-        data.keys().hasOnly(['email', 'role', 'addedAt']) &&
-        data.email is string && data.email.size() <= 200 &&
-        data.role in ['superadmin', 'council_reviewer'] &&
-        (!('addedAt' in data) || (data.addedAt is string && data.addedAt.size() <= 50));
+    function optStr(d, k, max) {
+      return !(k in d) || str(d[k], 0, max);
     }
 
-    // Health check collection for client connection validation
-    match /test/{docId} {
-      allow read: if isValidId(docId);
-      allow write: if isAdmin();
+    function optInt(d, k, min, max) {
+      return !(k in d) || (d[k] is int && d[k] >= min && d[k] <= max);
     }
 
-    // Community Census Submissions Collection
-    match /submissions/{submissionId} {
-      // Family members and public can read community census records
-      allow read: if isValidId(submissionId);
-
-      // Any community member can propose descendants (pending approval)
-      allow create: if isValidId(submissionId) &&
-        isValidSubmission(incoming()) &&
-        incoming().status == 'pending_approval';
-
-      // Only council administrators can review, approve, or reject submissions
-      allow update: if isValidId(submissionId) &&
-        isValidSubmission(incoming()) &&
-        isAdmin() &&
-        incoming().id == existing().id &&
-        incoming().parentId == existing().parentId;
-
-      // Only council administrators can delete records
-      allow delete: if isValidId(submissionId) && isAdmin();
+    function optBool(d, k) {
+      return !(k in d) || d[k] is bool;
     }
 
-    // Record Me Emergency & Member Notices
-    match /notifications/{notificationId} {
-      // Council admins can read notifications; submitters can read their own receipt
-      allow read: if isValidId(notificationId);
-
-      // Public family members can submit urgent notices or record requests
-      allow create: if isValidId(notificationId) &&
-        isValidNotification(incoming()) &&
-        incoming().status == 'PENDING_VERIFICATION';
-
-      // Only council admins can update or clear notifications
-      allow update: if isValidId(notificationId) &&
-        isValidNotification(incoming()) &&
-        isAdmin();
-
-      allow delete: if isValidId(notificationId) && isAdmin();
+    function validId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[A-Za-z0-9_-]+$');
     }
 
-    // Council Admins Collection
-    match /admins/{userId} {
-      allow read: if isSignedIn();
-      allow write: if isAdmin() && isValidId(userId) && isValidAdmin(incoming());
+    function validReceipt(v) {
+      return v is string && v.matches('^NR-[A-Z]{3}-[A-Z0-9]{6}$');
+    }
+
+    function lang(d) {
+      return !('language' in d) || d.language in ['en', 'sw', 'rw'];
+    }
+
+    // Common rules for anything a member of the public submits
+    function publicSubmissionBase(d) {
+      return d.consent == true
+        && d.createdAt == request.time
+        && validReceipt(d.receiptCode)
+        && lang(d);
+    }
+
+    // Reviewers may only change the review fields of a submission
+    function reviewUpdate(statuses) {
+      return isReviewer()
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status', 'reviewedAt', 'reviewedBy', 'reviewNote', 'createdPersonIds'])
+        && request.resource.data.status in statuses
+        && request.resource.data.reviewedAt == request.time
+        && request.resource.data.reviewedBy == request.auth.uid
+        && optStr(request.resource.data, 'reviewNote', 1000);
+    }
+
+    // ---------- Family registry ----------
+    function validPerson(d) {
+      return d.keys().hasOnly([
+          'fullName', 'kind', 'gender', 'generation', 'parentId', 'parentRole',
+          'parentLinkStatus', 'otherParentName', 'status', 'isLiving', 'birthYear',
+          'deathYear', 'location', 'note', 'reportedCount15Plus', 'sourceRef',
+          'reportOrder', 'birthOrder', 'branchId', 'descendantsStatus',
+          'createdAt', 'updatedAt', 'updatedBy'])
+        && d.keys().hasAll(['fullName', 'kind', 'gender', 'generation', 'status', 'updatedAt', 'updatedBy'])
+        && str(d.fullName, 1, 160)
+        && d.kind in ['person', 'family_section']
+        && d.gender in ['male', 'female', 'unknown']
+        && d.generation is int && d.generation >= 0 && d.generation <= 40
+        && (!('parentId' in d) || validId(d.parentId))
+        && (!('parentRole' in d) || d.parentRole in ['father', 'mother', 'unknown'])
+        && (!('parentLinkStatus' in d) || d.parentLinkStatus in ['confirmed', 'unconfirmed'])
+        && d.status in ['listed', 'verified', 'unconfirmed']
+        && (!('descendantsStatus' in d) || d.descendantsStatus in ['unknown', 'none_confirmed'])
+        && optStr(d, 'otherParentName', 160)
+        && optBool(d, 'isLiving')
+        && optStr(d, 'birthYear', 12)
+        && optStr(d, 'deathYear', 12)
+        && optStr(d, 'location', 160)
+        && optStr(d, 'note', 2000)
+        && optStr(d, 'sourceRef', 300)
+        && optStr(d, 'branchId', 128)
+        && optInt(d, 'reportedCount15Plus', 0, 100000)
+        && optInt(d, 'reportOrder', 0, 10000)
+        && optInt(d, 'birthOrder', 1, 100)
+        && d.updatedAt == request.time
+        && d.updatedBy == request.auth.uid;
+    }
+
+    match /persons/{personId} {
+      allow read: if true;
+      allow create, update: if validId(personId) && isEditor() && validPerson(request.resource.data);
+      allow delete: if isEditor();
+    }
+
+    // ---------- Website content (single document "site") ----------
+    match /content/{docId} {
+      allow read: if docId == 'site';
+      allow write: if docId == 'site'
+        && isEditor()
+        && request.resource.data.keys().hasOnly([
+             'announcement', 'biography', 'contact', 'donation', 'gallery', 'updatedAt', 'updatedBy'])
+        && (!('announcement' in request.resource.data) || request.resource.data.announcement is map)
+        && (!('biography' in request.resource.data) || request.resource.data.biography is map)
+        && (!('contact' in request.resource.data) || request.resource.data.contact is map)
+        && (!('donation' in request.resource.data) || request.resource.data.donation is map)
+        && (!('gallery' in request.resource.data)
+            || (request.resource.data.gallery is list && request.resource.data.gallery.size() <= 100))
+        && request.resource.data.updatedAt == request.time
+        && request.resource.data.updatedBy == request.auth.uid;
+    }
+
+    // ---------- Descendant claims ("Suggest children") ----------
+    function validChild(c) {
+      return c is map
+        && c.keys().hasOnly(['fullName', 'gender', 'birthYear', 'otherParentName', 'notes'])
+        && str(c.fullName, 1, 120)
+        && (!('gender' in c) || c.gender in ['male', 'female', 'unknown'])
+        && optStr(c, 'birthYear', 12)
+        && optStr(c, 'otherParentName', 120)
+        && optStr(c, 'notes', 500);
+    }
+
+    function validChildren(l) {
+      return l is list && l.size() >= 1 && l.size() <= 10
+        && validChild(l[0])
+        && (l.size() < 2 || validChild(l[1]))
+        && (l.size() < 3 || validChild(l[2]))
+        && (l.size() < 4 || validChild(l[3]))
+        && (l.size() < 5 || validChild(l[4]))
+        && (l.size() < 6 || validChild(l[5]))
+        && (l.size() < 7 || validChild(l[6]))
+        && (l.size() < 8 || validChild(l[7]))
+        && (l.size() < 9 || validChild(l[8]))
+        && (l.size() < 10 || validChild(l[9]));
+    }
+
+    match /submissions/{id} {
+      allow create: if validId(id)
+        && request.resource.data.keys().hasOnly([
+             'parentId', 'parentName', 'parentGeneration', 'children', 'contributorName',
+             'contributorContact', 'relationship', 'notes', 'consent', 'status',
+             'receiptCode', 'language', 'createdAt'])
+        && validId(request.resource.data.parentId)
+        && str(request.resource.data.parentName, 1, 160)
+        && request.resource.data.parentGeneration is int
+        && request.resource.data.parentGeneration >= 0 && request.resource.data.parentGeneration <= 40
+        && validChildren(request.resource.data.children)
+        && str(request.resource.data.contributorName, 2, 120)
+        && str(request.resource.data.contributorContact, 5, 160)
+        && optStr(request.resource.data, 'relationship', 500)
+        && optStr(request.resource.data, 'notes', 2000)
+        && request.resource.data.status == 'pending'
+        && publicSubmissionBase(request.resource.data);
+      allow read: if isReviewer();
+      allow update: if reviewUpdate(['pending', 'approved', 'declined', 'needs_info']);
+      allow delete: if isSuperadmin();
+    }
+
+    // ---------- Record Me notices ----------
+    match /notifications/{id} {
+      allow create: if validId(id)
+        && request.resource.data.keys().hasOnly([
+             'type', 'senderName', 'senderContact', 'personName', 'branchId', 'fatherName',
+             'motherName', 'generation', 'connection', 'subject', 'details', 'consent',
+             'status', 'receiptCode', 'language', 'createdAt'])
+        && request.resource.data.type in ['bereavement', 'announcement', 'new_member']
+        && str(request.resource.data.senderName, 2, 120)
+        && str(request.resource.data.senderContact, 5, 160)
+        && optStr(request.resource.data, 'personName', 160)
+        && optStr(request.resource.data, 'branchId', 128)
+        && optStr(request.resource.data, 'fatherName', 160)
+        && optStr(request.resource.data, 'motherName', 160)
+        && optStr(request.resource.data, 'generation', 20)
+        && optStr(request.resource.data, 'connection', 2000)
+        && optStr(request.resource.data, 'subject', 200)
+        && str(request.resource.data.details, 1, 3000)
+        && request.resource.data.status == 'pending'
+        && publicSubmissionBase(request.resource.data);
+      allow read: if isReviewer();
+      allow update: if reviewUpdate(['pending', 'acknowledged', 'approved', 'declined', 'archived']);
+      allow delete: if isSuperadmin();
+    }
+
+    // ---------- Contact messages ----------
+    match /messages/{id} {
+      allow create: if validId(id)
+        && request.resource.data.keys().hasOnly([
+             'fullName', 'contact', 'category', 'branchId', 'subject', 'message', 'consent',
+             'status', 'receiptCode', 'language', 'createdAt'])
+        && str(request.resource.data.fullName, 2, 120)
+        && str(request.resource.data.contact, 5, 160)
+        && request.resource.data.category in ['general', 'correction', 'history', 'photos', 'other']
+        && optStr(request.resource.data, 'branchId', 128)
+        && str(request.resource.data.subject, 2, 200)
+        && str(request.resource.data.message, 5, 4000)
+        && request.resource.data.status == 'pending'
+        && publicSubmissionBase(request.resource.data);
+      allow read: if isReviewer();
+      allow update: if reviewUpdate(['pending', 'acknowledged', 'archived']);
+      allow delete: if isSuperadmin();
+    }
+
+    // ---------- Administrators ----------
+    match /admins/{uid} {
+      // An admin may read their own record; superadmins may read all.
+      allow get: if signedIn() && (request.auth.uid == uid || isSuperadmin());
+      allow list: if isSuperadmin();
+      allow create, update: if isSuperadmin()
+        && validId(uid)
+        && request.resource.data.keys().hasOnly(['email', 'displayName', 'role', 'active', 'addedAt', 'addedBy'])
+        && str(request.resource.data.email, 3, 200)
+        && optStr(request.resource.data, 'displayName', 120)
+        && request.resource.data.role in ['superadmin', 'editor', 'reviewer']
+        && request.resource.data.active is bool
+        && request.resource.data.addedBy == request.auth.uid
+        // A superadmin cannot demote or deactivate themselves (prevents lock-out).
+        && (uid != request.auth.uid
+            || (request.resource.data.role == 'superadmin' && request.resource.data.active == true));
+      allow delete: if isSuperadmin() && uid != request.auth.uid;
+    }
+
+    // ---------- Audit log (append-only) ----------
+    match /auditLog/{id} {
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['action', 'targetType', 'targetId', 'summary', 'actorUid', 'actorEmail', 'at'])
+        && str(request.resource.data.action, 1, 60)
+        && str(request.resource.data.targetType, 1, 40)
+        && str(request.resource.data.targetId, 1, 160)
+        && str(request.resource.data.summary, 0, 1000)
+        && request.resource.data.actorUid == request.auth.uid
+        && request.resource.data.at == request.time;
+      allow read: if isReviewer();
+      allow update, delete: if false;
     }
   }
 }

@@ -1,60 +1,61 @@
 @import "tailwindcss";
 
+/* Design tokens — official palette: #064734 (primary), #E0FFC2 (secondary), #000000, #FFFFFF */
 @theme {
-  --color-heritage-primary: #064734;
-  --color-heritage-primary-dark: #032d21;
-  --color-heritage-primary-light: #0a5841;
-  --color-heritage-secondary: #E0FFC2;
-  --color-heritage-secondary-dark: #bdf78f;
-  --color-heritage-secondary-soft: #f4ffec;
-  --color-heritage-charcoal: #121815;
-  --color-heritage-muted: #4e5e56;
-  --color-heritage-stone: #f8faf8;
-  --color-heritage-border: #e3eae5;
+  --color-primary: #064734;
+  --color-primary-hover: #043526;
+  --color-mint: #E0FFC2;
+  --color-mint-soft: #F3FFE8;
+  --color-ink: #0B0F0D;
+  --color-muted: #47524C;
+  --color-paper: #FBFCFA;
+  --color-line: #DCE3DE;
+  --color-line-strong: #7D8A83;
+  --color-pending: #8A5A00;
+  --color-pending-soft: #FFF6E0;
+  --color-danger: #B42318;
+  --color-danger-hover: #912018;
+  --color-danger-soft: #FEF3F2;
+  --color-danger-strong: #7A271A;
 
-  --font-serif: "Montserrat", system-ui, -apple-system, sans-serif;
-  --font-sans: "Montserrat", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-sans: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 @layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
   body {
     font-family: var(--font-sans);
-    color: #121815;
-    background-color: #fbfdfb;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-ink);
+    background-color: var(--color-paper);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
   }
-
-  h1, h2, h3, h4, .font-display, .font-serif {
-    font-family: var(--font-sans);
+  h1, h2, h3 {
+    line-height: 1.2;
+    font-weight: 600;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  a {
+    text-underline-offset: 3px;
   }
 }
 
-/* Custom scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #f1f5f2;
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd8d1;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #064734;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-/* Touch responsiveness utilities */
-.touch-target {
-  min-height: 44px;
-  min-width: 44px;
-}
-
-/* Safe area insets for iOS */
 .pb-safe {
-  padding-bottom: env(safe-area-inset-bottom, 16px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
