@@ -18,7 +18,7 @@ export default function HistoryPage() {
   const gens: TKey[] = ['gen0', 'gen1', 'gen2', 'gen3', 'gen4', 'historyGen5'];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
+    <div className="mx-auto max-w-3xl px-4 py-8 sm:py-10">
       <PageHeader title={t('historyTitle')} intro={t('historyIntro')} />
 
       <section className="rounded-lg border border-line bg-white p-6 sm:p-8">
@@ -35,10 +35,14 @@ export default function HistoryPage() {
         <h2 className="font-serif text-3xl">{t('historyValuesTitle')}</h2>
         <ul className="mt-5 grid gap-4 sm:grid-cols-2">
           {VALUES.map(({ title, text, Icon }) => (
-            <li key={title} className="rounded-lg border border-line bg-white p-5">
-              <Icon className="h-7 w-7 text-primary" aria-hidden />
-              <h3 className="mt-3 text-xl font-semibold">{t(title)}</h3>
-              <p className="mt-1 text-ink">{t(text)}</p>
+            <li key={title} className="flex items-start gap-4 rounded-lg border border-line bg-white p-4">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-mint text-primary">
+                <Icon className="h-6 w-6" aria-hidden />
+              </span>
+              <span>
+                <h3 className="text-lg font-semibold">{t(title)}</h3>
+                <p className="mt-0.5 text-ink">{t(text)}</p>
+              </span>
             </li>
           ))}
         </ul>

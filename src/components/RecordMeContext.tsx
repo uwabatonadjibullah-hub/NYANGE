@@ -4,16 +4,17 @@ import type { NoticeType } from '../lib/types';
 const RecordMeDialog = lazy(() => import('./RecordMeDialog'));
 
 interface Ctx {
+  /** With a type, opens that form directly; without, asks the visitor what they want to do. */
   openRecordMe: (type?: NoticeType) => void;
 }
 const RecordMeCtx = createContext<Ctx>({ openRecordMe: () => {} });
 
 export function RecordMeProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<{ open: boolean; type: NoticeType }>({ open: false, type: 'new_member' });
+  const [state, setState] = useState<{ open: boolean; type: NoticeType | null }>({ open: false, type: null });
   const [mounted, setMounted] = useState(false);
-  const openRecordMe = useCallback((type: NoticeType = 'new_member') => {
+  const openRecordMe = useCallback((type?: NoticeType) => {
     setMounted(true);
-    setState({ open: true, type });
+    setState({ open: true, type: type ?? null });
   }, []);
   const value = useMemo(() => ({ openRecordMe }), [openRecordMe]);
   return (

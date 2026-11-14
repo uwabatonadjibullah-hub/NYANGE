@@ -157,12 +157,12 @@ export default function Layout() {
       </main>
 
       <footer className="bg-primary pb-24 text-white lg:pb-0">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2">
+        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:grid-cols-2 sm:py-10">
           <div>
             <Logo light sub={t('brandSub')} />
-            <p className="mt-4 max-w-sm text-mint">{t('footerTagline')}</p>
+            <p className="mt-3 max-w-sm text-mint">{t('footerTagline')}</p>
           </div>
-          <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-1 sm:justify-self-end">
+          <nav aria-label="Footer" className="flex flex-wrap gap-x-6 sm:grid sm:grid-cols-2 sm:justify-self-end">
             {NAV.map((n) => (
               <Link key={n.to} to={n.to} className="inline-flex min-h-11 items-center text-white hover:text-mint hover:underline">
                 {t(n.key)}
@@ -190,7 +190,7 @@ export default function Layout() {
               key={to}
               to={to}
               end={to === '/'}
-              className={({ isActive }) => `flex min-h-16 flex-col items-center justify-center gap-1 text-xs font-medium ${isActive ? 'text-primary' : 'text-muted'}`}
+              className={({ isActive }) => `flex min-h-16 flex-col items-center justify-center gap-1 text-[13px] leading-tight font-medium ${isActive ? 'text-primary' : 'text-muted'}`}
             >
               {({ isActive }) => (
                 <>
@@ -200,7 +200,7 @@ export default function Layout() {
               )}
             </NavLink>
           ))}
-          <button type="button" onClick={() => openRecordMe()} className="flex min-h-16 cursor-pointer flex-col items-center justify-center gap-1 text-xs font-semibold text-primary">
+          <button type="button" onClick={() => openRecordMe()} className="flex min-h-16 cursor-pointer flex-col items-center justify-center gap-1 text-[13px] leading-tight font-semibold text-primary">
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white">
               <PenLine className="h-4 w-4" aria-hidden />
             </span>

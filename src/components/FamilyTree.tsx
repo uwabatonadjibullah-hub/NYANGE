@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, Crosshair, Maximize, Minimize, Minus, Plus, ScanSearch, ShieldCheck, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Maximize, Minimize, Minus, Plus, RotateCcw, ShieldCheck, X } from 'lucide-react';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { generationLabel, relationshipLabel, statusLabel, useI18n } from '../i18n';
@@ -225,39 +225,30 @@ export default function FamilyTree({ index, mode, focusId, onTraceLineage }: Pro
   const siblingsShown = !!(selected?.parentId && expanded.has(selected.parentId));
   const relFocus = mode === 'lineage' && focusId ? index.byId.get(focusId) : undefined;
 
-  const toolBase = 'h-11 min-w-11 cursor-pointer items-center justify-center gap-2 rounded-md px-2 text-ink hover:bg-mint focus-visible:outline-2 focus-visible:outline-primary';
+  const toolBase = 'h-11 min-w-11 cursor-pointer items-center justify-center gap-1.5 rounded-md px-2 text-ink hover:bg-mint focus-visible:outline-2 focus-visible:outline-primary';
   const toolBtn = `inline-flex ${toolBase}`;
 
   return (
     <div className={fullscreen ? 'fixed inset-0 z-50 flex flex-col bg-paper' : 'flex flex-col'}>
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-1 rounded-t-lg border border-b-0 border-line bg-white px-2 py-1">
-        <button type="button" className={toolBtn} onClick={() => zoomAt(1 / 1.25)} aria-label={t('treeZoomOut')} title={t('treeZoomOut')}>
+        <button type="button" className={`${toolBtn} border border-line`} onClick={() => zoomAt(1 / 1.25)} aria-label={t('treeZoomOut')} title={t('treeZoomOut')}>
           <Minus className="h-5 w-5" aria-hidden />
         </button>
-        <span className="w-11 text-center text-sm tabular-nums text-muted" aria-live="polite">{Math.round(view.z * 100)}%</span>
-        <button type="button" className={toolBtn} onClick={() => zoomAt(1.25)} aria-label={t('treeZoomIn')} title={t('treeZoomIn')}>
+        <button type="button" className={`${toolBtn} border border-line`} onClick={() => zoomAt(1.25)} aria-label={t('treeZoomIn')} title={t('treeZoomIn')}>
           <Plus className="h-5 w-5" aria-hidden />
         </button>
-        <button type="button" className={toolBtn} onClick={fit} aria-label={t('treeFit')} title={t('treeFit')}>
-          <ScanSearch className="h-5 w-5" aria-hidden />
-        </button>
-        <button type="button" className={toolBtn} onClick={() => centerOn(selectedId ?? rootId)} aria-label={t('treeCenter')} title={t('treeCenter')}>
-          <Crosshair className="h-5 w-5" aria-hidden />
+        <button type="button" className={toolBtn} onClick={collapseAll}>
+          <RotateCcw className="h-5 w-5" aria-hidden /> <span className="font-medium">{t('treeStartAgain')}</span>
         </button>
         {mode === 'full' && (
-          <>
-            <button type="button" className={`hidden sm:inline-flex ${toolBase}`} onClick={expandAll}>
-              <ChevronDown className="h-5 w-5" aria-hidden /> <span className="text-sm font-medium">{t('treeExpandAll')}</span>
-            </button>
-            <button type="button" className={`hidden sm:inline-flex ${toolBase}`} onClick={collapseAll}>
-              <ChevronUp className="h-5 w-5" aria-hidden /> <span className="text-sm font-medium">{t('treeCollapseAll')}</span>
-            </button>
-          </>
+          <button type="button" className={`hidden md:inline-flex ${toolBase}`} onClick={expandAll}>
+            <ChevronDown className="h-5 w-5" aria-hidden /> <span className="font-medium">{t('treeExpandAll')}</span>
+          </button>
         )}
-        <button type="button" className={`${toolBtn} ml-auto`} onClick={() => setFullscreen((f) => !f)} aria-pressed={fullscreen} aria-label={fullscreen ? t('treeExitFullscreen') : t('treeFullscreen')}>
+        <button type="button" className={`${toolBtn} ml-auto border border-line`} onClick={() => setFullscreen((f) => !f)} aria-pressed={fullscreen} aria-label={fullscreen ? t('treeExitFullscreen') : t('treeFullscreen')}>
           {fullscreen ? <Minimize className="h-5 w-5" aria-hidden /> : <Maximize className="h-5 w-5" aria-hidden />}
-          <span className="hidden text-sm font-medium sm:inline">{fullscreen ? t('treeExitFullscreen') : t('treeFullscreen')}</span>
+          <span className="hidden font-medium min-[440px]:inline">{fullscreen ? t('treeExitFullscreen') : t('treeFullscreen')}</span>
         </button>
       </div>
 

@@ -1,4 +1,4 @@
-import { BellRing, HeartHandshake, UserPlus } from 'lucide-react';
+import { ArrowLeft, BellRing, ChevronRight, HeartHandshake, UserPlus } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 import { REPORT_SECTIONS } from '../data/seed';
 import { useI18n, type TKey } from '../i18n';
@@ -16,16 +16,20 @@ const TYPES: { type: NoticeType; title: TKey; desc: TKey; Icon: typeof UserPlus 
 
 const empty = { senderName: '', senderContact: '', personName: '', branchId: '', fatherName: '', motherName: '', generation: '', connection: '', subject: '', details: '' };
 
-export default function RecordMeDialog({ open, onClose, initialType }: { open: boolean; onClose: () => void; initialType: NoticeType }) {
+export default function RecordMeDialog({ open, onClose, initialType }: { open: boolean; onClose: () => void; initialType: NoticeType | null }) {
   const { t, lang } = useI18n();
-  const [type, setType] = useState<NoticeType>(initialType);
+  const [type, setType] = useState<NoticeType>(initialType ?? 'new_member');
+  const [step, setStep] = useState<'choose' | 'form'>(initialType ? 'form' : 'choose');
   const [f, setF] = useState(empty);
   const [consent, setConsent] = useState(false);
   const [trap, setTrap] = useState('');
   const status = useFormStatus();
 
   useEffect(() => {
-    if (open) setType(initialType);
+    if (open) {
+      setType(initialType ?? 'new_member');
+      setStep(initialType ? 'form' : 'choose');
+    }
   }, [open, initialType]);
 
   const set = (k: keyof typeof empty) => (e: { target: { value: string } }) => setF((s) => ({ ...s, [k]: e.target.value }));
@@ -35,6 +39,7 @@ export default function RecordMeDialog({ open, onClose, initialType }: { open: b
     setConsent(false);
     status.setReceipt(null);
     status.setError(null);
+    setStep(initialType ? 'form' : 'choose');
   };
 
   const onSubmit = (e: FormEvent) => {
@@ -79,26 +84,53 @@ export default function RecordMeDialog({ open, onClose, initialType }: { open: b
       {status.receipt ? (
         <Receipt code={status.receipt} onAnother={reset} onDone={close} />
       ) : (
-        <form onSubmit={onSubmit} noValidate className="relative space-y-5">
-          <p className="text-muted">{t('recordIntro')}</p>
-          <fieldset>
-            <legend className="sr-only">{t('recordTitle')}</legend>
-            <div className="grid gap-2 sm:grid-cols-3">
+        step === 'choose' ? (
+          <div className="space-y-4">
+            <p className="text-lg">{t('recordChoose')}</p>
+            <ul className="space-y-3">
               {TYPES.map(({ type: ty, title, desc, Icon }) => (
-                <label
-                  key={ty}
-                  className={`flex cursor-pointer gap-3 rounded-md border p-3 sm:flex-col ${type === ty ? 'border-primary bg-mint-soft ring-2 ring-primary' : 'border-line hover:border-primary'}`}
-                >
-                  <input type="radio" name="notice-type" value={ty} checked={type === ty} onChange={() => setType(ty)} className="sr-only" />
-                  <Icon className="mt-0.5 h-6 w-6 shrink-0 text-primary" aria-hidden />
-                  <span>
-                    <span className="block font-semibold">{t(title)}</span>
-                    <span className="block text-sm text-muted">{t(desc)}</span>
-                  </span>
-                </label>
+                <li key={ty}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setType(ty);
+                      setStep('form');
+                      status.setError(null);
+                    }}
+                    className="flex w-full cursor-pointer items-center gap-4 rounded-lg border-2 border-line p-4 text-left hover:border-primary hover:bg-mint-soft"
+                  >
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-mint text-primary">
+                      <Icon className="h-6 w-6" aria-hidden />
+                    </span>
+                    <span className="flex-1">
+                      <span className="block text-lg font-semibold">{t(title)}</span>
+                      <span className="block text-muted">{t(desc)}</span>
+                    </span>
+                    <ChevronRight className="h-6 w-6 shrink-0 text-primary" aria-hidden />
+                  </button>
+                </li>
               ))}
-            </div>
-          </fieldset>
+            </ul>
+            <p className="text-sm text-muted">{t('recordIntro')}</p>
+          </div>
+        ) : (
+        <form onSubmit={onSubmit} noValidate className="relative space-y-5">
+          <div className="flex items-center gap-3 rounded-lg bg-mint-soft p-3">
+            {(() => {
+              const cur = TYPES.find((x) => x.type === type)!;
+              return (
+                <>
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mint text-primary">
+                    <cur.Icon className="h-5 w-5" aria-hidden />
+                  </span>
+                  <span className="flex-1 text-lg font-semibold">{t(cur.title)}</span>
+                </>
+              );
+            })()}
+            <button type="button" onClick={() => setStep('choose')} className="inline-flex min-h-11 cursor-pointer items-center gap-1 rounded-md px-2 font-semibold text-primary hover:bg-mint">
+              <ArrowLeft className="h-5 w-5" aria-hidden /> {t('recordBack')}
+            </button>
+          </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label={t('formYourName')} required>
@@ -174,6 +206,7 @@ export default function RecordMeDialog({ open, onClose, initialType }: { open: b
             <Button type="submit" disabled={status.sending}>{status.sending ? t('formSending') : t('formSend')}</Button>
           </div>
         </form>
+        )
       )}
     </Dialog>
   );

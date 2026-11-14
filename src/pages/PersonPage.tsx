@@ -1,4 +1,4 @@
-import { ChevronRight, GitFork, Info, ShieldCheck, UserPlus } from 'lucide-react';
+import { ChevronDown, ChevronRight, GitFork, Info, ShieldCheck, UserPlus } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ButtonLink } from '../components/ui';
@@ -13,8 +13,8 @@ const SuggestChildrenDialog = lazy(() => import('../components/SuggestChildrenDi
 function PersonChip({ p }: { p: Person }) {
   return (
     <li>
-      <Link to={`/person/${encodeURIComponent(p.id)}`} className="flex min-h-11 items-center justify-between gap-2 rounded-md border border-line bg-white px-3 py-2 hover:border-primary">
-        <span className="font-medium text-ink">{p.fullName}</span>
+      <Link to={`/person/${encodeURIComponent(p.id)}`} className="flex min-h-14 items-center justify-between gap-2 rounded-md border border-line bg-white px-4 py-2 hover:border-primary">
+        <span className="text-lg font-medium text-ink">{p.fullName}</span>
         <ChevronRight className="h-5 w-5 shrink-0 text-muted" aria-hidden />
       </Link>
     </li>
@@ -26,6 +26,7 @@ export default function PersonPage() {
   const { t } = useI18n();
   const { index, loading } = useRegistry();
   const [suggestOpen, setSuggestOpen] = useState(false);
+  const [allSiblings, setAllSiblings] = useState(false);
   const person = index.byId.get(id);
   useMeta(person?.fullName ?? t('personNotFound'), { noindex: true });
 
@@ -48,7 +49,7 @@ export default function PersonPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 sm:py-10">
       <nav aria-label={t('personLineage')} className="mb-6 overflow-x-auto">
-        <ol className="flex items-center gap-1 whitespace-nowrap text-sm">
+        <ol className="flex items-center gap-1 whitespace-nowrap">
           {lineage.map((p, i) => (
             <li key={p.id} className="flex items-center gap-1">
               {i > 0 && <ChevronRight className="h-4 w-4 text-muted" aria-hidden />}
@@ -63,9 +64,9 @@ export default function PersonPage() {
       </nav>
 
       <article className="rounded-lg border border-line bg-white p-5 sm:p-8">
-        <p className="text-muted">{generationLabel(t, person.generation)}</p>
-        <h1 className="mt-1 font-serif text-3xl sm:text-4xl">{person.fullName}</h1>
-        <p className={`mt-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-semibold ${person.status === 'verified' ? 'bg-mint text-primary' : 'bg-pending-soft text-pending'}`}>
+        <p className="text-lg text-muted">{generationLabel(t, person.generation)}</p>
+        <h1 className="mt-1 font-serif text-[2rem] leading-tight sm:text-4xl">{person.fullName}</h1>
+        <p className={`mt-3 inline-flex items-center gap-2 rounded-full px-3 py-1 font-semibold ${person.status === 'verified' ? 'bg-mint text-primary' : 'bg-pending-soft text-pending'}`}>
           {person.status === 'verified' && <ShieldCheck className="h-4 w-4" aria-hidden />}
           {statusLabel(t, person)}
         </p>
@@ -80,49 +81,51 @@ export default function PersonPage() {
         <dl className="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2">
           {person.generation > 0 && (
             <div>
-              <dt className="text-sm text-muted">{t('personReported')}</dt>
+              <dt className="text-muted">{t('personReported')}</dt>
               <dd className="text-lg font-semibold">{person.reportedCount15Plus ?? <span className="font-normal text-muted">{t('personReportedUnknown')}</span>}</dd>
             </div>
           )}
           {person.isLiving === false && (
             <div>
-              <dt className="text-sm text-muted">{t('personDeceased')}</dt>
+              <dt className="text-muted">{t('personDeceased')}</dt>
               <dd className="text-lg">{[person.birthYear && `${t('personBorn')} ${person.birthYear}`, person.deathYear && `${t('personDied')} ${person.deathYear}`].filter(Boolean).join(' · ') || '—'}</dd>
             </div>
           )}
           {showPrivate && person.location && (
             <div>
-              <dt className="text-sm text-muted">{t('personPlace')}</dt>
+              <dt className="text-muted">{t('personPlace')}</dt>
               <dd className="text-lg">{person.location}</dd>
             </div>
           )}
           {person.otherParentName && (
             <div>
-              <dt className="text-sm text-muted">{t('personOtherParent')}</dt>
+              <dt className="text-muted">{t('personOtherParent')}</dt>
               <dd className="text-lg">{person.otherParentName}</dd>
-            </div>
-          )}
-          {person.sourceRef && (
-            <div className="sm:col-span-2">
-              <dt className="text-sm text-muted">{t('personSource')}</dt>
-              <dd>{person.sourceRef}</dd>
             </div>
           )}
           {person.note && (
             <div className="sm:col-span-2">
-              <dt className="text-sm text-muted">{t('personNotes')}</dt>
+              <dt className="text-muted">{t('personNotes')}</dt>
               <dd className="whitespace-pre-line">{person.note}</dd>
             </div>
           )}
         </dl>
-        {person.isLiving !== false && person.generation > 1 && <p className="mt-4 text-sm text-muted">{t('personLivingPrivacy')}</p>}
+        {person.isLiving !== false && person.generation > 1 && <p className="mt-4 text-muted">{t('personLivingPrivacy')}</p>}
+        {person.sourceRef && (
+          <details className="group mt-3">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 text-primary">
+              <ChevronDown className="h-5 w-5 transition-transform group-open:rotate-180" aria-hidden /> {t('personSourceTitle')}
+            </summary>
+            <p className="text-muted">{person.sourceRef}</p>
+          </details>
+        )}
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <ButtonLink to={`/family-tree?focus=${encodeURIComponent(person.id)}`}>
+          <ButtonLink to={`/family-tree?focus=${encodeURIComponent(person.id)}`} className="min-h-12 text-lg">
             <GitFork className="h-5 w-5" aria-hidden /> {t('personViewInTree')}
           </ButtonLink>
           {person.descendantsStatus !== 'none_confirmed' && (
-            <button type="button" onClick={() => setSuggestOpen(true)} className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-primary px-4 font-semibold text-primary hover:bg-mint">
+            <button type="button" onClick={() => setSuggestOpen(true)} className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-md border-2 border-primary px-4 text-lg font-semibold text-primary hover:bg-mint">
               <UserPlus className="h-5 w-5" aria-hidden /> {t('personSuggestChildren')}
             </button>
           )}
@@ -148,7 +151,12 @@ export default function PersonPage() {
         {siblings.length > 0 && (
           <section className="md:col-span-2">
             <h2 className="mb-3 font-serif text-2xl">{t('personSiblings')} <span className="text-muted">({siblings.length})</span></h2>
-            <ul className="grid gap-2 sm:grid-cols-2">{siblings.map((s) => <PersonChip key={s.id} p={s} />)}</ul>
+            <ul className="grid gap-2 sm:grid-cols-2">{(allSiblings ? siblings : siblings.slice(0, 6)).map((s) => <PersonChip key={s.id} p={s} />)}</ul>
+            {siblings.length > 6 && !allSiblings && (
+              <button type="button" onClick={() => setAllSiblings(true)} className="mt-3 inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-md border-2 border-primary px-4 text-lg font-semibold text-primary hover:bg-mint sm:w-auto">
+                {t('personShowAll', { n: siblings.length })}
+              </button>
+            )}
           </section>
         )}
       </div>

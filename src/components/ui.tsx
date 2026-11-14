@@ -94,7 +94,7 @@ export function Field({ label, required, hint, children, optionalText, className
 }
 
 export const inputClass =
-  'block w-full rounded-md border border-line-strong bg-white px-3 min-h-11 py-2 text-base text-ink placeholder:text-muted/80 focus:border-primary focus:outline-2 focus:outline-primary/40';
+  'block w-full rounded-md border border-line-strong bg-white px-3 min-h-12 py-2 text-base text-ink placeholder:text-muted/80 focus:border-primary focus:outline-2 focus:outline-primary/40';
 
 export function Alert({ tone, children }: { tone: 'error' | 'info' | 'success'; children: ReactNode }) {
   const tones = {
@@ -111,9 +111,9 @@ export function Alert({ tone, children }: { tone: 'error' | 'info' | 'success'; 
 
 export function PageHeader({ title, intro, eyebrow }: { title: string; intro?: string; eyebrow?: string }) {
   return (
-    <header className="mb-8 max-w-3xl">
+    <header className="mb-6 max-w-3xl sm:mb-8">
       {eyebrow && <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary">{eyebrow}</p>}
-      <h1 className="font-serif text-4xl text-ink sm:text-5xl">{title}</h1>
+      <h1 className="font-serif text-[2rem] leading-tight text-ink sm:text-5xl">{title}</h1>
       {intro && <p className="mt-3 text-lg text-muted">{intro}</p>}
     </header>
   );
