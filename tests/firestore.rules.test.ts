@@ -70,6 +70,7 @@ describe('public visitors', () => {
     await assertSucceeds(addDoc(collection(anon(), 'notifications'), notice()));
     await assertSucceeds(addDoc(collection(anon(), 'submissions'), claim()));
     await assertSucceeds(addDoc(collection(anon(), 'messages'), message()));
+    await assertSucceeds(addDoc(collection(anon(), 'messages'), message({ language: 'fr' })));
   });
 
   it('cannot send malformed or forged submissions', async () => {
@@ -85,6 +86,7 @@ describe('public visitors', () => {
     await assertFails(addDoc(collection(db, 'submissions'), claim({ children: Array.from({ length: 11 }, () => ({ fullName: 'A' })) })));
     await assertFails(addDoc(collection(db, 'submissions'), claim({ children: [{ fullName: 'A' }, { fullName: '' }] })));
     await assertFails(addDoc(collection(db, 'messages'), message({ category: 'spam' })));
+    await assertFails(addDoc(collection(db, 'messages'), message({ language: 'de' })));
   });
 
   it('cannot edit the family tree, content, or review decisions', async () => {

@@ -10,6 +10,7 @@ const LANGS: { code: Language; label: string }[] = [
   { code: 'en', label: 'English' },
   { code: 'sw', label: 'Kiswahili' },
   { code: 'rw', label: 'Kinyarwanda' },
+  { code: 'fr', label: 'Français' },
 ];
 
 function LocalizedInput({ label, value, onChange, rows = 1, max = 600 }: { label: string; value: LocalizedText; onChange: (v: LocalizedText) => void; rows?: number; max?: number }) {

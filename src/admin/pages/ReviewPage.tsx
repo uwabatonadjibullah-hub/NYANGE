@@ -67,7 +67,7 @@ export default function ReviewPage({ kind }: { kind: ReviewCollection }) {
     act(async () => {
       const content = await loadContent(true);
       const text = `${String(item.subject ?? '')}: ${String(item.details ?? '')}`.slice(0, 600);
-      await saveContent(session, { ...content, announcement: { active: true, text: { en: text, sw: text, rw: text } } });
+      await saveContent(session, { ...content, announcement: { active: true, text: { en: text, sw: text, rw: text, fr: text } } });
       await setReviewStatus(session, kind, item, 'approved', 'Published as website announcement');
       await loadContent(true);
     });

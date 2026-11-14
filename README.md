@@ -4,7 +4,7 @@ The family website of the descendants of **NYANGE RADJABU**: history, the family
 
 | Part | Address | Who uses it |
 |---|---|---|
-| Public website | `/`, `/family-tree`, `/person/:id`, `/history`, `/gallery`, `/contact`, `/support`, `/privacy` | Everyone (English, Kiswahili, Kinyarwanda) |
+| Public website | `/`, `/family-tree`, `/person/:id`, `/history`, `/gallery`, `/contact`, `/support`, `/privacy` | Everyone (English, Kiswahili, Kinyarwanda, French) |
 | Administration | `/admin` | Family administrators only (Google sign-in) |
 
 Built with React 19, TypeScript (strict), Vite, Tailwind CSS 4 and Firebase (Firestore + Authentication).
@@ -143,7 +143,9 @@ The family tree starts from the preliminary census report *“RIPOTI YA IDADI YA
 
 ## 6. Translations
 
-All public text is in `src/i18n/en.ts`, `sw.ts` and `rw.ts`. TypeScript refuses to build if a Kiswahili or Kinyarwanda text is missing. The Kiswahili and Kinyarwanda texts should be reviewed by native speakers in the family. The administration screens are in English.
+All public text is in `src/i18n/en.ts`, `sw.ts`, `rw.ts` and `fr.ts`. TypeScript refuses to build if any translation is missing. The Kiswahili, Kinyarwanda and French texts should be reviewed by native speakers in the family.
+
+On their first visit, public visitors are asked to choose their language (`src/components/LanguageChooser.tsx`). The choice is remembered on that device and can be changed at any time from the language menu at the top of every page. The administration screens are in English.
 
 ## 7. Project structure
 

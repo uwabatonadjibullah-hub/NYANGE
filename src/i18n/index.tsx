@@ -2,44 +2,57 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { Gender, Language, Person } from '../lib/types';
 import type { RelationshipKey } from '../lib/genealogy';
 import { en, type Dict } from './en';
+import { fr } from './fr';
 import { rw } from './rw';
 import { sw } from './sw';
 
 export type TKey = keyof Dict;
-const DICTS: Record<Language, Dict> = { en, sw, rw };
+const DICTS: Record<Language, Dict> = { en, sw, rw, fr };
 export const LANGUAGES: { code: Language; label: string; short: string }[] = [
   { code: 'en', label: 'English', short: 'EN' },
   { code: 'sw', label: 'Kiswahili', short: 'SW' },
   { code: 'rw', label: 'Kinyarwanda', short: 'RW' },
+  { code: 'fr', label: 'Français', short: 'FR' },
 ];
 const STORAGE_KEY = 'nyange_language';
 
 interface I18n {
   lang: Language;
   setLang: (l: Language) => void;
+  /** false until the visitor has picked a language (first visit). */
+  hasChosen: boolean;
   t: (key: TKey, params?: Record<string, string | number>) => string;
 }
 
 const Ctx = createContext<I18n | null>(null);
 
-function initialLang(): Language {
+const isLanguage = (v: unknown): v is Language => v === 'en' || v === 'sw' || v === 'rw' || v === 'fr';
+
+function savedLang(): Language | null {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved === 'en' || saved === 'sw' || saved === 'rw') return saved;
+    return isLanguage(saved) ? saved : null;
   } catch {
-    /* storage unavailable */
+    return null; // storage unavailable
   }
+}
+
+function initialLang(): Language {
+  const saved = savedLang();
+  if (saved) return saved;
   const nav = typeof navigator !== 'undefined' ? navigator.language.slice(0, 2) : 'en';
-  return nav === 'sw' || nav === 'rw' ? nav : 'en';
+  return isLanguage(nav) ? nav : 'en';
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Language>(initialLang);
+  const [hasChosen, setHasChosen] = useState<boolean>(() => savedLang() !== null);
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
   const setLang = useCallback((l: Language) => {
     setLangState(l);
+    setHasChosen(true);
     try {
       localStorage.setItem(STORAGE_KEY, l);
     } catch {
@@ -54,7 +67,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     },
     [lang],
   );
-  const value = useMemo(() => ({ lang, setLang, t }), [lang, setLang, t]);
+  const value = useMemo(() => ({ lang, setLang, t, hasChosen }), [lang, setLang, t, hasChosen]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

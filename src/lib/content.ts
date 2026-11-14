@@ -9,6 +9,7 @@ export const DEFAULT_CONTENT: SiteContent = {
   biography: {
     en: 'NYANGE RADJABU was a generous man who spent most of his life in Kamembe, Rwanda, and spent his final period in Burundi. He was a devoted Muslim who raised his children according to Islamic values while maintaining Rwandan values and traditions. He believed in helping others and made sure that his wives and children were taken care of on a daily basis. His legacy continues through the generations of descendants who form his extended family.',
     sw: 'NYANGE RADJABU alikuwa mtu mkarimu aliyeishi sehemu kubwa ya maisha yake huko Kamembe, Rwanda, na kipindi chake cha mwisho alikiishi nchini Burundi. Alikuwa Mwislamu mwaminifu aliyewalea watoto wake kwa mujibu wa maadili ya Kiislamu huku akidumisha maadili na desturi za Kinyarwanda. Aliamini kusaidia wengine na alihakikisha wake zake na watoto wake wanatunzwa kila siku. Urithi wake unaendelea kupitia vizazi vya wazao wanaounda familia yake pana.',
+    fr: 'NYANGE RADJABU était un homme généreux qui a passé la plus grande partie de sa vie à Kamembe, au Rwanda, et la dernière période de sa vie au Burundi. Musulman dévoué, il a élevé ses enfants selon les valeurs islamiques tout en préservant les valeurs et traditions rwandaises. Il croyait en l’entraide et veillait chaque jour à ce que ses épouses et ses enfants soient pris en charge. Son héritage se perpétue à travers les générations de descendants qui forment sa grande famille.',
     rw: 'NYANGE RADJABU yari umugabo w’umutima mwiza wamaze igice kinini cy’ubuzima bwe i Kamembe mu Rwanda, aza gusoza iminsi ye mu Burundi. Yari Umuyisilamu wiyeguriye Imana wareze abana be akurikije amahame ya Kisilamu ari nako yubahiriza indangagaciro n’umuco nyarwanda. Yizeraga gufasha abandi kandi yitaga ku bagore be n’abana be buri munsi. Umurage we urakomeza binyuze mu bisekuru by’abamukomokaho bagize umuryango we mugari.',
   },
   contact: {},
@@ -18,7 +19,7 @@ export const DEFAULT_CONTENT: SiteContent = {
 
 export function pick(text: LocalizedText | undefined, lang: Language): string {
   if (!text) return '';
-  return text[lang] || text.en || text.sw || text.rw || '';
+  return text[lang] || text.en || text.fr || text.sw || text.rw || '';
 }
 
 let cache: SiteContent | null = null;

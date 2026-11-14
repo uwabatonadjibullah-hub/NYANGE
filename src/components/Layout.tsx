@@ -4,6 +4,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { LANGUAGES, useI18n, type TKey } from '../i18n';
 import { pick, useSiteContent } from '../lib/content';
 import type { Language } from '../lib/types';
+import LanguageChooser from './LanguageChooser';
 import { Logo } from './Logo';
 import { useRecordMe } from './RecordMeContext';
 
@@ -207,6 +208,8 @@ export default function Layout() {
           </button>
         </div>
       </nav>
+
+      <LanguageChooser />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-export type Language = 'en' | 'sw' | 'rw';
+export type Language = 'en' | 'sw' | 'rw' | 'fr';
 
 export type Gender = 'male' | 'female' | 'unknown';
 
@@ -55,6 +55,7 @@ export interface LocalizedText {
   en?: string;
   sw?: string;
   rw?: string;
+  fr?: string;
 }
 
 export interface GalleryItem {
