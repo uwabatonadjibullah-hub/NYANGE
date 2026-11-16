@@ -87,6 +87,20 @@ export async function savePerson(s: AdminSession, id: string | null, p: Omit<Per
   return ref.id;
 }
 
+/** Add several children under one parent in a single atomic save. */
+export async function addChildren(s: AdminSession, parent: Person, children: Omit<Person, 'id'>[]): Promise<string[]> {
+  const batch = writeBatch(db);
+  const ids: string[] = [];
+  for (const c of children) {
+    const ref = doc(collection(db, 'persons'));
+    ids.push(ref.id);
+    batch.set(ref, personData(c, s));
+  }
+  log(batch, s, 'person.addChildren', 'person', parent.id, `${children.length} added under ${parent.fullName}: ${children.map((c) => c.fullName).join(', ')}`);
+  await batch.commit();
+  return ids;
+}
+
 export async function deletePerson(s: AdminSession, p: Person): Promise<void> {
   const batch = writeBatch(db);
   batch.delete(doc(db, 'persons', p.id));

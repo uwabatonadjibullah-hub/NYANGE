@@ -113,7 +113,7 @@ export const sw: Dict = {
   personPlace: 'Mahali',
   personDeceased: 'Marehemu',
   personLivingPrivacy: 'Taarifa binafsi za ndugu walio hai zinahifadhiwa kwa siri.',
-  personNotes: 'Maelezo',
+  personNotes: 'Historia ya maisha',
   personCorrection: 'Umeona kosa? Waambie wasimamizi',
 
   rel_self: 'Mtu aliyechaguliwa',

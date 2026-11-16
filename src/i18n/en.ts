@@ -116,7 +116,7 @@ export const en = {
   personPlace: 'Place',
   personDeceased: 'Deceased',
   personLivingPrivacy: 'Personal details of living relatives are kept private.',
-  personNotes: 'Notes',
+  personNotes: 'Life story',
   personCorrection: 'See a mistake? Tell the administrators',
 
   // Relationships (relative to the selected person)

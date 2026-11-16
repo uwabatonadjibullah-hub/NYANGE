@@ -113,7 +113,7 @@ export const rw: Dict = {
   personPlace: 'Ahantu',
   personDeceased: 'Nyakwigendera',
   personLivingPrivacy: 'Amakuru bwite y’abavandimwe bakiriho abikwa mu ibanga.',
-  personNotes: 'Ibisobanuro',
+  personNotes: 'Amateka y’ubuzima',
   personCorrection: 'Wabonye ikosa? Bimenyeshe abayobozi b’urubuga',
 
   rel_self: 'Uwatoranyijwe',

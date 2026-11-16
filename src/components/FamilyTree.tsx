@@ -1,9 +1,10 @@
 import { ChevronDown, ChevronUp, Maximize, Minimize, Minus, Plus, RotateCcw, ShieldCheck, X } from 'lucide-react';
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { generationLabel, relationshipLabel, statusLabel, useI18n } from '../i18n';
 import { getChildren, getSiblings, relationship, type GenealogyIndex } from '../lib/genealogy';
 import { CARD_H, CARD_W, computeLayout } from '../lib/treeLayout';
+import type { Person } from '../lib/types';
 
 const MIN_Z = 0.25;
 const MAX_Z = 2;
@@ -14,9 +15,11 @@ interface Props {
   mode: 'full' | 'lineage';
   focusId: string | null;
   onTraceLineage: (id: string) => void;
+  /** Replaces the public "Open profile" action (used by the admin tree). */
+  renderActions?: (person: Person, helpers: { showChildren: () => void }) => ReactNode;
 }
 
-export default function FamilyTree({ index, mode, focusId, onTraceLineage }: Props) {
+export default function FamilyTree({ index, mode, focusId, onTraceLineage, renderActions }: Props) {
   const { t } = useI18n();
   const rootId = index.rootId;
   const initialExpanded = useCallback(() => new Set<string>(mode === 'full' && rootId ? [rootId] : []), [mode, rootId]);
@@ -359,9 +362,18 @@ export default function FamilyTree({ index, mode, focusId, onTraceLineage }: Pro
             </button>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
-            <Link to={`/person/${encodeURIComponent(selected.id)}`} className="inline-flex min-h-11 items-center rounded-md bg-primary px-4 font-semibold text-white hover:bg-primary-hover">
-              {t('treeViewProfile')}
-            </Link>
+            {renderActions ? (
+              renderActions(selected, {
+                showChildren: () => {
+                  reveal.current = selected.id;
+                  setExpanded((prev) => new Set(prev).add(selected.id));
+                },
+              })
+            ) : (
+              <Link to={`/person/${encodeURIComponent(selected.id)}`} className="inline-flex min-h-11 items-center rounded-md bg-primary px-4 font-semibold text-white hover:bg-primary-hover">
+                {t('treeViewProfile')}
+              </Link>
+            )}
             {selectedChildren > 0 && (
               <button type="button" onClick={() => toggle(selected.id)} className="inline-flex min-h-11 cursor-pointer items-center rounded-md border border-primary px-4 font-semibold text-primary hover:bg-mint">
                 {expanded.has(selected.id) ? t('treeHideChildren') : t('treeShowChildren')}

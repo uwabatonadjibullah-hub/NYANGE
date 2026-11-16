@@ -1,4 +1,4 @@
-import { AlertTriangle, Database, Plus, Save, Trash2 } from 'lucide-react';
+import { AlertTriangle, Database, GitFork, ListTree, Plus, Save, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Alert, Button, Field, inputClass } from '../../components/ui';
@@ -8,6 +8,7 @@ import type { Person } from '../../lib/types';
 import { countPersonsInDb, deletePerson, importSeed, savePerson } from '../api';
 import { describeError, useLoad, useSession } from '../context';
 import { PersonPicker } from '../PersonPicker';
+import RegistryTree from './RegistryTree';
 
 type Draft = Omit<Person, 'id'>;
 
@@ -35,6 +36,7 @@ export default function RegistryPage() {
 
   const selectedId = params.get('id');
   const newParent = params.get('newChildOf');
+  const view: 'tree' | 'advanced' = params.get('view') === 'advanced' || selectedId || newParent !== null ? 'advanced' : 'tree';
   const editing = selectedId ? index.byId.get(selectedId) : undefined;
   const [draft, setDraft] = useState<Draft | null>(null);
 
@@ -120,6 +122,25 @@ export default function RegistryPage() {
       <h1 className="font-serif text-3xl">Family registry</h1>
       <p className="mt-1 max-w-3xl text-muted">Add, correct or remove people in the family tree. Every change is recorded in the activity log and appears on the public website immediately.</p>
 
+      <div role="tablist" aria-label="Registry view" className="mt-4 flex gap-1 rounded-lg border border-line bg-white p-1 sm:w-fit">
+        <button
+          role="tab"
+          aria-selected={view === 'tree'}
+          onClick={() => setParams({})}
+          className={`inline-flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-md px-4 text-lg font-semibold sm:flex-none ${view === 'tree' ? 'bg-primary text-white' : 'text-ink hover:bg-mint'}`}
+        >
+          <GitFork className="h-5 w-5" aria-hidden /> Family tree
+        </button>
+        <button
+          role="tab"
+          aria-selected={view === 'advanced'}
+          onClick={() => setParams({ view: 'advanced' })}
+          className={`inline-flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-md px-4 text-lg font-semibold sm:flex-none ${view === 'advanced' ? 'bg-primary text-white' : 'text-ink hover:bg-mint'}`}
+        >
+          <ListTree className="h-5 w-5" aria-hidden /> Edit details
+        </button>
+      </div>
+
       {dbEmpty && (
         <div className="mt-4 rounded-lg border border-primary/30 bg-mint-soft p-5">
           <h2 className="flex items-center gap-2 text-xl font-semibold"><Database className="h-5 w-5" aria-hidden /> Import the initial registry</h2>
@@ -130,6 +151,13 @@ export default function RegistryPage() {
 
       {message && <div className="mt-4"><Alert tone={message.tone}>{message.text}</Alert></div>}
 
+      {view === 'tree' && (
+        <div className="mt-6">
+          <RegistryTree disabled={dbEmpty} onEditAdvanced={(id) => setParams({ id })} />
+        </div>
+      )}
+
+      {view === 'advanced' && (
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_1.4fr]">
         <section aria-label="People" className="rounded-lg border border-line bg-white p-4">
           <label htmlFor="reg-q" className="mb-1 block font-semibold">Search</label>
@@ -241,7 +269,7 @@ export default function RegistryPage() {
                 <Field label="Source">
                   {(p) => <input {...p} className={inputClass} value={draft.sourceRef ?? ''} onChange={(e) => set('sourceRef', e.target.value)} maxLength={300} />}
                 </Field>
-                <Field label="Public notes" className="sm:col-span-2">
+                <Field label="Life story (shown on the public page)" className="sm:col-span-2">
                   {(p) => <textarea {...p} rows={3} className={inputClass} value={draft.note ?? ''} onChange={(e) => set('note', e.target.value)} maxLength={2000} />}
                 </Field>
               </div>
@@ -259,6 +287,8 @@ export default function RegistryPage() {
           )}
         </section>
       </div>
+
+      )}
 
       {issues.length > 0 && (
         <section className="mt-8 rounded-lg border border-pending/30 bg-pending-soft p-5">

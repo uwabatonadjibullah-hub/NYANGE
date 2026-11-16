@@ -113,7 +113,7 @@ export const fr: Dict = {
   personPlace: 'Lieu',
   personDeceased: 'Défunt(e)',
   personLivingPrivacy: 'Les informations personnelles des proches vivants restent privées.',
-  personNotes: 'Notes',
+  personNotes: 'Histoire de sa vie',
   personCorrection: 'Vous voyez une erreur ? Prévenez les administrateurs',
 
   rel_self: 'Personne sélectionnée',

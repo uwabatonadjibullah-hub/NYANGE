@@ -79,7 +79,7 @@ export default function PersonPage() {
         )}
 
         <dl className="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2">
-          {person.generation > 0 && (
+          {person.generation > 0 && (person.reportOrder !== undefined || person.reportedCount15Plus !== undefined) && (
             <div>
               <dt className="text-muted">{t('personReported')}</dt>
               <dd className="text-lg font-semibold">{person.reportedCount15Plus ?? <span className="font-normal text-muted">{t('personReportedUnknown')}</span>}</dd>
